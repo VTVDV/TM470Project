@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"> 
+
+<h:head>
+	<link href="#{request.contextPath}/css/users.css" rel="stylesheet" type="text/css"/> 
+	<link href="#{request.contextPath}/css/bootstrap.min.css" rel="stylesheet"/>
+  <title><ui:insert name="title">#{bundle['welcome.title']}</ui:insert></title>
+</h:head>
+
+<!-- Test if user is logged in and is of correct user type. -->
+<c:if test="#{userBean.name eq null}">
+	<f:event type="preRenderView" listener="#{userBean.redirect}" />
+	<f:attribute name="page" value="login"/>
+</c:if>
+<c:if test="#{userBean.userType ne 1}">
+	<f:event type="preRenderView" listener="#{userBean.redirect}" />
+	<f:attribute name="page" value="dash"/>
+</c:if>
+
+<f:event type="preRenderView" listener="#{userManageBean.populateDropdown}" />
+
+<body>
+<div class = "header">
+	<div class = "headerText">
+		<div class = "tileName"><p><span class="glyphicon glyphicon-arrow-left"></span> <a href="dash.xhtml">#{bundle['users.return']}</a></p></div>
+	</div>
+</div>
+
+<div class="box">
+	<div class="errors">
+		<h:message for="userPass" />
+		<h:message for="userName" />
+	</div>
+	<h:form id="create">
+	<h1>#{bundle['user.create']}</h1>
+	<hr />
+			<div id="user">
+				#{bundle['user.user']}
+				<h:inputText id="userName" value="#{userManageBean.name}" required="true"
+					requiredMessage="#{bundle['welcome.name.validation']}">
+				</h:inputText>
+			</div>
+			<div id="pass">
+				#{bundle['user.pass']}
+				<h:inputText id="userPass" value="#{userManageBean.pass}"
+					required="true"
+					requiredMessage="#{bundle['welcome.pass.validation']}">
+				</h:inputText>
+			</div>
+			<div id="type">
+				#{bundle['user.type']}
+				<h:selectOneMenu id="userType" value="#{userManageBean.userType}"
+					required="true"
+					requiredMessage="#{bundle['welcome.pass.validation']}">
+					<f:selectItem itemValue="1" itemLabel="#{bundle['user.top']}" />
+					<f:selectItem itemValue="2" itemLabel="#{bundle['user.mid']}" />
+					<f:selectItem itemValue="3" itemLabel="#{bundle['user.bot']}" />					
+				</h:selectOneMenu>
+			</div>
+			<div id="button">
+				<h:commandButton value="#{bundle['user.button']}"
+					action="#{userManageBean.createUser}" styleClass="button" />
+			</div>
+	</h:form>
+</div>
+
+<div class="box">
+	<div class="errors">
+		<h:message for="userPass" />
+		<h:message for="userName" />
+	</div>
+	<h:form id="modify">
+	<h1>#{bundle['user.modify']}</h1>
+	<hr />
+			<div id="userToMod">
+				#{bundle['user.user']}
+				<h:selectOneMenu id="userList" value="#{userManageBean.id}"
+					required="true"
+					requiredMessage="#{bundle['welcome.name.validation']}">
+					<f:selectItems value="#{userManageBean.userNames}" />				
+				</h:selectOneMenu>
+			</div>
+			<div id="userMod">
+				#{bundle['user.newName']}
+				<h:inputText id="userName" value="#{userManageBean.name}" required="true"
+					requiredMessage="#{bundle['welcome.name.validation']}">
+				</h:inputText>
+			</div>
+			<div id="passMod">
+				#{bundle['user.pass']}
+				<h:inputSecret id="userPass" value="#{userManageBean.pass}"
+					required="true"
+					requiredMessage="#{bundle['welcome.pass.validation']}">
+				</h:inputSecret>
+			</div>
+			<div id="typeMod">
+				#{bundle['user.type']}
+				<h:selectOneMenu id="userType" value="#{userManageBean.userType}"
+					required="true"
+					requiredMessage="#{bundle['welcome.pass.validation']}">
+					<f:selectItem itemValue="1" itemLabel="#{bundle['user.top']}" />
+					<f:selectItem itemValue="2" itemLabel="#{bundle['user.mid']}" />
+					<f:selectItem itemValue="3" itemLabel="#{bundle['user.bot']}" />					
+				</h:selectOneMenu>
+			</div>
+			<div id="button">
+				<h:commandButton value="#{bundle['welcome.button']}"
+					action="#{userManageBean.modUser}" styleClass="button" />
+			</div>
+	</h:form>
+</div>
+
+</body> 
+</html>

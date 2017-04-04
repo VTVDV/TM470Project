@@ -1,0 +1,32 @@
+application.test=This is a test message for my TM470 project.
+user.button=Create User
+user.user=User to Modify
+user.pass=User Password
+user.type=User Type
+user.top=Administrator
+user.mid=Manager
+user.bot=Staff
+user.create=Create A User
+user.modify=Modify A User
+user.newName=New Username
+application.exception=System Error! Please contact system administrator.
+users.return=Return to the Dashboard
+dash.sales=Sales Front
+dash.test=Tests
+dash.stock=Stock
+dash.reports=Reports
+dash.office=Back Office
+dash.users=Manage Users
+
+welcome.title=Login | WebPoS
+welcome.greet=Welcome to WebPoS!
+welcome.user=User:
+welcome.pass=Password:
+welcome.name.validation=Username required.
+welcome.pass.validation=Password required.
+welcome.invalid=Invalid password or username. 
+welcome.button=Submit
+
+dash.title= Dashboard | WebPoS
+dash.greet=Welcome to WebPoS!
+dash.hello=Hello 

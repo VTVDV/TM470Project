@@ -1,0 +1,47 @@
+body {
+	background-image: url("../resources/background.jpg"); 
+	background-size: 100% auto;
+	margin: 0;
+}
+
+.header {
+	background-color: #66a992;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    width: 100%;
+    box-shadow: -2px 13px 13px rgba(44, 44, 44, 0.78);
+}
+
+.headerText {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+    padding-left: 5%;
+}
+
+.tilesList {
+    margin: 0;
+    padding: 0;
+}
+
+.tile {
+display: inline-block;
+    width: 250px;
+    height: 200px;
+    padding-top: 50px;
+    margin: 5%;
+    border: 1px solid grey;
+    background-color: white;
+    text-align: center;
+    box-shadow: -2px 13px 13px rgba(44, 44, 44, 0.78);
+}
+
+.tileName {
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.glyph {
+	font-size: 50px;
+}
