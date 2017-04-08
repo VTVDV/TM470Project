@@ -31,10 +31,20 @@ CREATE TABLE `webpos`.`tbl_record` (
   `STOCK_SERIAL` VARCHAR(45) NULL,
   `STOCK_IS_FAULTY` INT NOT NULL,
   `STOCK_FAULT_NOTE` VARCHAR(45) NULL,
-  `STOCK_IS_SOLD` INT NOT NULL, 
+  `STOCK_HAS_SOLD` INT NOT NULL, 
   `STOCK_SOLD_CASH` INT NULL, /*Amount item was sold for*/
   `STOCK_BOUGHT_CASH` INT NULL, /*Amount item was bought for*/
   `STOCK_BOUGHT_EXCHANGE` INT NULL, /*Amount item was exchanged for*/
   PRIMARY KEY (`STOCK_ID`),
   UNIQUE INDEX `STOCK_ID_UNIQUE` (`STOCK_ID` ASC));
+  
+  /*SQL to add Stock Record's ID as a foreign key to Stock Item table*/   
+  ALTER TABLE `webpos`.`tbl_stock` 
+ADD INDEX `FK_StockRecordID_idx` (`STOCK_REC_ID` ASC);
+ALTER TABLE `webpos`.`tbl_stock` 
+ADD CONSTRAINT `FK_StockRecordID`
+  FOREIGN KEY (`STOCK_REC_ID`)
+  REFERENCES `webpos`.`tbl_record` (`REC_ID`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
