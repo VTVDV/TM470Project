@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:f = "http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html">
+      
+<h:head>
+	<link href="#{request.contextPath}/css/stock.css" rel="stylesheet" type="text/css"/> 
+  <title><ui:insert name="title">#{bundle['stock.title']}</ui:insert></title>
+</h:head>
+
+<h:body>
+<div class = "header">
+	<div class = "headerText">
+		<div class = "tileName"><p><span class="glyphicon glyphicon-arrow-left"></span> <a href="dash.xhtml">#{bundle['webpos.return']}</a></p></div>
+	</div>
+</div>
+
+<div class="box">		
+	<div id="search">
+		<h:form>
+			<h:inputText id="search" value="#{stockBean.searchTerm}"></h:inputText>
+			<h:commandButton value="" styleClass="glyphicon glyphicon-arrow-left">
+				<f:ajax execute="search" render="output"/>
+			</h:commandButton>
+			<h:outputText id="output" value="#{stockBean.search}"/>
+		</h:form>
+	</div>
+</div>
+
+</h:body>
+</html>
