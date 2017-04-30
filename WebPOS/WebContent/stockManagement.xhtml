@@ -7,6 +7,8 @@
       
 <h:head>
 	<link href="#{request.contextPath}/css/stock.css" rel="stylesheet" type="text/css"/> 
+	<link href="#{request.contextPath}/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+	<script src="js/bootstrap.js"></script>
   <title><ui:insert name="title">#{bundle['stock.title']}</ui:insert></title>
 </h:head>
 
@@ -26,6 +28,38 @@
 			</h:commandButton>
 			<h:outputText id="output" value="#{stockBean.search}"/>
 		</h:form>
+	</div>
+	<div id="searchResults">
+		<table class="table table-hover">
+			<tr>
+				<th>0</th>
+				<th>Somebody</th>
+				<th>Once</th>
+				<th>Told</th>
+				<th>Me</th>
+			</tr>
+			<tr>
+				<th>1</th>
+				<th>The</th>
+				<th>World</th>
+				<th>Is</th>
+				<th>Gonna</th>
+			</tr>
+			<tr>
+				<th>2</th>
+				<th>Roll</th>
+				<th>Me</th>
+				<th>I</th>
+				<th>Ain't</th>
+			</tr>
+			<tr>
+				<th>3</th>
+				<th>The</th>
+				<th>Smartest</th>
+				<th>Tool</th>
+				<th>In the sheeeeed.</th>
+			</tr>			
+		</table>
 	</div>
 </div>
 
