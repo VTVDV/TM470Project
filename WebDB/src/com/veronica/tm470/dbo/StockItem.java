@@ -7,6 +7,14 @@ public class StockItem
 	private String name;
 	private String serial;
 	
+	public StockRecord getStockRecord() {
+		return stockRecord;
+	}
+
+	public void setStockRecord(StockRecord stockRecord) {
+		this.stockRecord = stockRecord;
+	}
+
 	private double sold;
 	private double boughtCash;
 	private double boughtExchange;
@@ -76,7 +84,7 @@ public class StockItem
 		this.boughtExchange = boughtExchange;
 	}
 
-	public boolean isHasSold() 
+	public boolean hasSold() 
 	{
 		return hasSold;
 	}

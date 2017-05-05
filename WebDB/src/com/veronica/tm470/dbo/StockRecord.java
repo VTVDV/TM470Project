@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class StockRecord 
 {
 	private int id;
-	private int categoryID;
+	private String category;
 	private String name;
 	
 	private ArrayList<StockItem> stockItems;
@@ -30,12 +30,12 @@ public class StockRecord
 		this.id = id;
 	}
 		
-	public int getCategoryID() {
-		return categoryID;
+	public String getCategory() {
+		return category;
 	}
 
-	public void setCategoryID(int categoryID) {
-		this.categoryID = categoryID;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public String getName() 
