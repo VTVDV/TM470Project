@@ -25,6 +25,19 @@ public class StockBean extends AbstractBean implements Serializable
 	{
 		this.searchTerm = searchTerm;
 	}
-	
-	
+		
+	//Test method to return table with search term inside.
+	public String renderResult(String searchTerm) 
+	{
+		return 
+		"<table class=\"table table-hover\">" +
+		"<tr>" +
+		"<th>"+ searchTerm +"</th>" +
+		"<th>"+ searchTerm +"</th>" +
+		"<th>"+ searchTerm +"</th>" +
+		"<th>"+ searchTerm +"</th>" +
+		"<th>"+ searchTerm +"</th>" +
+		"</tr>" +
+		"</table>";
+	}
 }
