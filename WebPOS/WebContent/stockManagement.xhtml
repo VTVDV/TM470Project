@@ -8,8 +8,11 @@
 <h:head>
 	<link href="#{request.contextPath}/css/stock.css" rel="stylesheet" type="text/css"/> 
 	<link href="#{request.contextPath}/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"/>
 	<script src="js/bootstrap.js"></script>
+	<script src="js/stockManagement.js"></script>
   <title><ui:insert name="title">#{bundle['stock.title']}</ui:insert></title>
+  
 </h:head>
 
 <h:body>
@@ -20,53 +23,74 @@
 </div>
 
 <div class="box">		
-	<div id="search">
+	<ul class="nav nav-tabs" id="tabs">
+	<!-- REPLACE BELOW STRINGS WITH MESSAGES -->
+	  <li class="active"><a data-toggle="tab" href="#search">Search</a></li>
+	  <li><a data-toggle="tab" href="#new">New Stock Item</a></li>
+	  <li><a data-toggle="tab" href="#cats">Manage Categories</a></li>
+	</ul>
+	
+	<div class = "tab-content" id="tabContent">
+		<div id="search" class="tab-pane fade in active">
+		
 		<h:form>
 			<h:inputText id="search" value="#{stockBean.searchTerm}"></h:inputText>
-			<h:commandButton value="" styleClass="glyphicon glyphicon-arrow-left">
-				<f:ajax execute="search" render="output"/>
+			<h:commandButton value="Search" styleClass="glyphicon glyphicon-arrow-left">
+				<f:ajax execute="search" render="output" onevent="function(data) { showResults(data); }"/>
 			</h:commandButton>
-			<h:outputText id="output" value="#{stockBean.search}"/>
+			<h:outputText id="output" value="#{stockBean.search}" style="display: none"/>
 		</h:form>
-	</div>
-	<div id="searchResults">
-	
-<!-- 		
-		TABLE TEST CODE
-
-		<table class="table table-hover">
-			<tr>
-				<th>0</th>
-				<th>Somebody</th>
-				<th>Once</th>
-				<th>Told</th>
-				<th>Me</th>
-			</tr>
-			<tr>
-				<th>1</th>
-				<th>The</th>
-				<th>World</th>
-				<th>Is</th>
-				<th>Gonna</th>
-			</tr>
-			<tr>
-				<th>2</th>
-				<th>Roll</th>
-				<th>Me</th>
-				<th>I</th>
-				<th>Ain't</th>
-			</tr>
-			<tr>
-				<th>3</th>
-				<th>The</th>
-				<th>Smartest</th>
-				<th>Tool</th>
-				<th>In the sheeeeed.</th>
-			</tr>			
-		</table> -->
+		
+			<div id="searchResults">	
+				<table class="table table-hover" id="results">
+					<tr>
+						<th>0</th>
+						<th>Somebody</th>
+						<th>Once</th>
+						<th>Told</th>
+						<th>Me</th>
+					</tr>
+					<tr>
+						<th>1</th>
+						<th>The</th>
+						<th>World</th>
+						<th>Is</th>
+						<th>Gonna</th>
+					</tr>
+					<tr>
+						<th>2</th>
+						<th>Roll</th>
+						<th>Me</th>
+						<th>I</th>
+						<th>Ain't</th>
+					</tr>
+					<tr>
+						<th>3</th>
+						<th>The</th>
+						<th>Smartest</th>
+						<th>Tool</th>
+						<th>In the sheeeeed.</th>
+					</tr>			
+				</table>	
+			</div>					
+		</div>
+		
+		<div id="new" class="tab-pane fade">
+			<h1>New Stock Item</h1>
+		</div>
+		<div id="cats" class="tab-pane fade">
+			<h1>Manage Categories</h1>
+			<p>When completed user should be able to create, delete and modify categories.</p>
+			
+			<h:form>
+			<h:inputText id="search" value="#{stockBean.searchTerm}"></h:inputText>
+			</h:commandButton>
+			</h:form>
+		</div>	
 		
 	</div>
-</div>
+	
+</div>	
 
 </h:body>
 </html>

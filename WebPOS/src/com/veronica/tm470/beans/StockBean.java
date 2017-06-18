@@ -18,7 +18,7 @@ public class StockBean extends AbstractBean implements Serializable
 
 	public String getSearchTerm() 
 	{
-		return searchTerm;
+		return renderResult(searchTerm);
 	}
 
 	public void setSearchTerm(String searchTerm) 
