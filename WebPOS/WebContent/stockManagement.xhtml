@@ -9,7 +9,7 @@
 	<link href="#{request.contextPath}/css/stock.css" rel="stylesheet" type="text/css"/> 
 	<link href="#{request.contextPath}/css/bootstrap.css" rel="stylesheet" type="text/css"/>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"/>
-	<script src="js/bootstrap.js"></script>
+	<script src="js/bootstrap.js"/>
 	<script src="js/stockManagement.js"></script>
   <title><ui:insert name="title">#{bundle['stock.title']}</ui:insert></title>
   
@@ -24,10 +24,9 @@
 
 <div class="box">		
 	<ul class="nav nav-tabs" id="tabs">
-	<!-- REPLACE BELOW STRINGS WITH MESSAGES -->
-	  <li class="active"><a data-toggle="tab" href="#search">Search</a></li>
-	  <li><a data-toggle="tab" href="#new">New Stock Item</a></li>
-	  <li><a data-toggle="tab" href="#cats">Manage Categories</a></li>
+	  <li class="active"><a data-toggle="tab" href="#search">#{bundle['stock.search']}</a></li>
+	  <li><a data-toggle="tab" href="#new">#{bundle['stock.new']}</a></li>
+	  <li><a data-toggle="tab" href="#cats">#{bundle['stock.mancat']}</a></li>
 	</ul>
 	
 	<div class = "tab-content" id="tabContent">
@@ -76,16 +75,19 @@
 		</div>
 		
 		<div id="new" class="tab-pane fade">
-			<h1>New Stock Item</h1>
+			<h1>#{bundle['stock.new']}</h1>
 		</div>
 		<div id="cats" class="tab-pane fade">
-			<h1>Manage Categories</h1>
-			<p>When completed user should be able to create, delete and modify categories.</p>
+			<h1>#{bundle['stock.mancat']}</h1>
+			<p>PLACEHOLDER TEXT: When completed user should be able to create, delete and modify categories here.</p>
 			
+			<!--  FORM TO BE IMPLEMENTED TO CREATE CATEGORIES
 			<h:form>
-			<h:inputText id="search" value="#{stockBean.searchTerm}"></h:inputText>
-			</h:commandButton>
+				<h:inputText id="search" value="#{stockBean.searchTerm}"></h:inputText>
+				</h:commandButton>
 			</h:form>
+			-->
+			
 		</div>	
 		
 	</div>
