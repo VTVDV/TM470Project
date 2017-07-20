@@ -2,7 +2,11 @@ package com.veronica.tm470.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.veronica.tm470.dbo.*;
 
 public class StockDAO extends AbstractDAO
@@ -17,7 +21,7 @@ public class StockDAO extends AbstractDAO
 			connection = getConnection();
 			statement = connection.prepareStatement("INSERT INTO webpos.tbl_record "
 					+ "(REC_NAME,"
-					+ "REC_CATEGORY,"
+					+ "REC_CATEGORY_ID,"
 					+ "REC_SELL,"
 					+ "REC_CASH,"
 					+ "REC_EXCHANGE,"
@@ -27,7 +31,7 @@ public class StockDAO extends AbstractDAO
 					+ "REC_REQ_TEST) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			statement.setString(1, stockRecord.getName());
-			statement.setString(2, stockRecord.getCategory());
+			statement.setInt(2, stockRecord.getCategory().getId());
 			statement.setDouble(3, stockRecord.getSellPrice());
 			statement.setDouble(4, stockRecord.getCashBuyPrice());
 			statement.setDouble(5, stockRecord.getExchangePrice());
@@ -54,6 +58,82 @@ public class StockDAO extends AbstractDAO
 				System.out.println("There was an error closing the statement.");
 			}			
 		}
+	}
+	
+	public List<StockRecord> getStockRecords(String searchTerm) throws Exception
+	{
+		Connection connection = null;
+		PreparedStatement statement = null;
+		
+		List<StockRecord> stockRecords = new ArrayList<>();
+		try
+		{
+			connection = getConnection();
+			
+			String[] searchTermSplit = searchTerm.split("\\s+");
+			StringBuilder builder = new StringBuilder();
+			
+			builder.append("SELECT * FROM webpos.tbl_record records ");
+			builder.append("LEFT JOIN webpos.tbl_category categories ON records.REC_Category_ID = categories.CAT_ID ");
+			
+			for (int i = 0; i < searchTermSplit.length; i++ )
+			{
+				if (i == 0)
+				{
+					builder.append("WHERE records.REC_KEYWORDS LIKE ? ");
+				}
+				else
+				{
+					builder.append("AND records.REC_KEYWORDS LIKE ? ");
+				}
+			}
+						
+			statement = connection.prepareStatement(builder.toString());
+			
+			for (int i = 0; i < searchTermSplit.length; i++)
+			{
+				statement.setString(i + 1, "%" + searchTermSplit[i] + "%");
+			}
+			
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) 
+			{
+				StockRecord stockRecord = new StockRecord();
+				stockRecord.setId(rs.getInt("REC_ID"));
+				stockRecord.setName(rs.getString("REC_NAME"));
+				Category category = new Category();
+				category.setId(rs.getInt("CAT_ID"));
+				category.setName(rs.getString("CAt_NAME"));				
+				stockRecord.setCategory(category);
+				stockRecord.setSellPrice(rs.getDouble("REC_SELL"));
+				stockRecord.setCashBuyPrice(rs.getDouble("REC_CASH"));
+				stockRecord.setExchangePrice(rs.getDouble("REC_EXCHANGE"));
+				stockRecord.setNotes(rs.getString("REC_NOTE"));
+				stockRecord.setKeywords(rs.getString("REC_KEYWORDS"));
+				stockRecord.setRequiresSerial(rs.getBoolean("REC_REQ_SERIAL"));
+				stockRecord.setRequiresTest(rs.getBoolean("REC_REQ_TEST"));					
+				stockRecords.add(stockRecord);
+			}			
+			
+		}
+		catch(SQLException exception)
+		{
+			exception.printStackTrace();
+			System.out.println("There was an error getting a list of stock records.");
+		}
+		finally
+		{
+			try
+			{
+				close(statement, connection);
+			}
+			catch(SQLException sqlxstate)
+			{
+				sqlxstate.printStackTrace();
+				System.out.println("There was an error closing the statement.");
+			}			
+		}
+		return stockRecords;
 	}
 	
 	public void addStockItem(StockItem stockItem) throws Exception 

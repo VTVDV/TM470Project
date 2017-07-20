@@ -89,4 +89,10 @@ public class UserBean extends AbstractBean implements Serializable
 		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 		context.redirect(context.getRequestContextPath() + "/faces/" + page + ".xhtml");
 	}
+	
+	@Override
+	protected void clearForm() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -38,6 +38,14 @@ CREATE TABLE `webpos`.`tbl_record` (
   PRIMARY KEY (`STOCK_ID`),
   UNIQUE INDEX `STOCK_ID_UNIQUE` (`STOCK_ID` ASC));
   
+  /*Schema for creating a category table*/
+  CREATE TABLE `webpos`.`tbl_category` (
+  `REC_ID` INT NOT NULL AUTO_INCREMENT,
+  `REC_CATEGORY` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`REC_ID`),
+  UNIQUE INDEX `REC_CATEGORY_UNIQUE` (`REC_CATEGORY` ASC),
+  UNIQUE INDEX `REC_ID_UNIQUE` (`REC_ID` ASC));
+  
   /*SQL to add Stock Record's ID as a foreign key to Stock Item table*/   
   ALTER TABLE `webpos`.`tbl_stock` 
 ADD INDEX `FK_StockRecordID_idx` (`STOCK_REC_ID` ASC);

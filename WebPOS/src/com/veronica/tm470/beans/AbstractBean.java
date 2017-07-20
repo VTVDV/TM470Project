@@ -21,4 +21,6 @@ public abstract class AbstractBean implements Serializable
 		return bundle;
 	}
 	
+	protected abstract void clearForm();
+	
 }

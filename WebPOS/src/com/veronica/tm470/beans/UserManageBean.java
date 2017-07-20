@@ -74,6 +74,7 @@ public class UserManageBean extends AbstractBean implements Serializable
 		this.pass = pass;
 	}	
 	
+	//Gets a map of users from database
 	public void populateUsers()
 	{
 		UserDAO dao = new UserDAO();
@@ -87,6 +88,7 @@ public class UserManageBean extends AbstractBean implements Serializable
 		}
 	}
 	
+	//Formats map of users for use with a dropdown menu
 	public void populateDropdown()
 	{
 		populateUsers();
@@ -126,5 +128,11 @@ public class UserManageBean extends AbstractBean implements Serializable
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	@Override
+	protected void clearForm() {
+		// TODO Auto-generated method stub
+		
 	}
 }

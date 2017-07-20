@@ -8,12 +8,14 @@
 <h:head>
 	<link href="#{request.contextPath}/css/stock.css" rel="stylesheet" type="text/css"/> 
 	<link href="#{request.contextPath}/css/bootstrap.css" rel="stylesheet" type="text/css"/>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"/>
-	<script src="js/bootstrap.js"/>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script src="js/bootstrap.js"></script>
 	<script src="js/stockManagement.js"></script>
   <title><ui:insert name="title">#{bundle['stock.title']}</ui:insert></title>
-  
 </h:head>
+
+<!-- Populate drop down list of categories -->
+<f:event type="preRenderView" listener="#{categoryBean.populateDropdown}" />
 
 <h:body>
 <div class = "header">
@@ -25,8 +27,10 @@
 <div class="box">		
 	<ul class="nav nav-tabs" id="tabs">
 	  <li class="active"><a data-toggle="tab" href="#search">#{bundle['stock.search']}</a></li>
-	  <li><a data-toggle="tab" href="#new">#{bundle['stock.new']}</a></li>
+	  <li style=""><a data-toggle="tab" href="#modifyStock">#{bundle['stock.modify']}</a></li>
+	  <li><a data-toggle="tab" href="#newStock">#{bundle['stock.new']}</a></li>
 	  <li><a data-toggle="tab" href="#cats">#{bundle['stock.mancat']}</a></li>
+	  
 	</ul>
 	
 	<div class = "tab-content" id="tabContent">
@@ -34,65 +38,181 @@
 		
 		<h:form>
 			<h:inputText id="search" value="#{stockBean.searchTerm}"></h:inputText>
-			<h:commandButton value="Search" styleClass="glyphicon glyphicon-arrow-left">
-				<f:ajax execute="search" render="output" onevent="function(data) { showResults(data); }"/>
-			</h:commandButton>
-			<h:outputText id="output" value="#{stockBean.search}" style="display: none"/>
+			<h:commandLink class="glyphicon glyphicon-search" action="#{stockBean.getStockRecordList}">
+				<f:ajax execute="search" render="results"/>
+			</h:commandLink>
+			<h:outputText id="output" value="#{stockBean.search}" style="display: none" escape="false"/>
 		</h:form>
 		
-			<div id="searchResults">	
-				<table class="table table-hover" id="results">
-					<tr>
-						<th>0</th>
-						<th>Somebody</th>
-						<th>Once</th>
-						<th>Told</th>
-						<th>Me</th>
-					</tr>
-					<tr>
-						<th>1</th>
-						<th>The</th>
-						<th>World</th>
-						<th>Is</th>
-						<th>Gonna</th>
-					</tr>
-					<tr>
-						<th>2</th>
-						<th>Roll</th>
-						<th>Me</th>
-						<th>I</th>
-						<th>Ain't</th>
-					</tr>
-					<tr>
-						<th>3</th>
-						<th>The</th>
-						<th>Smartest</th>
-						<th>Tool</th>
-						<th>In the sheeeeed.</th>
-					</tr>			
-				</table>	
+			<div id="searchResults">
+			<h:panelGroup id="results" class="table-responsive">
+				<h:dataTable class="table table-hover" id="resultsTable" value="#{stockBean.stockRecords}"
+							 var="stockRecord" rendered="#{not empty stockBean.stockRecords}">
+					<h:column>
+						<f:facet name="header">
+							Stock Record
+						</f:facet>
+						#{stockRecord.name}
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							Category
+						</f:facet>
+						#{stockRecord.category.name}
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							Quantity
+						</f:facet>
+						Not yet implemented
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							Sell Price
+						</f:facet>
+						#{stockRecord.sellPrice}
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							Cash
+						</f:facet>
+						#{stockRecord.cashBuyPrice}
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							Exchange
+						</f:facet>
+						#{stockRecord.exchangePrice}
+					</h:column>		
+					<h:column>
+						<f:facet name="header">
+							Action
+						</f:facet>
+						<button class="stock-button" id="#{stockRecord.id}"></button>
+					</h:column>			
+				</h:dataTable>
+			</h:panelGroup>
 			</div>					
 		</div>
 		
-		<div id="new" class="tab-pane fade">
-			<h1>#{bundle['stock.new']}</h1>
+		<!-- STOCK RECORD MODIFICATION -->
+		<div id="modifyStock" class="tab-pane fade">
+			<h1>#{bundle['stock.modify']}</h1>
 		</div>
-		<div id="cats" class="tab-pane fade">
-			<h1>#{bundle['stock.mancat']}</h1>
-			<p>PLACEHOLDER TEXT: When completed user should be able to create, delete and modify categories here.</p>
-			
-			<!--  FORM TO BE IMPLEMENTED TO CREATE CATEGORIES
-			<h:form>
-				<h:inputText id="search" value="#{stockBean.searchTerm}"></h:inputText>
-				</h:commandButton>
-			</h:form>
-			-->
-			
-		</div>	
 		
-	</div>
-	
-</div>	
-
+		<!--STOCK RECORD CREATION-->
+		<div id="newStock" class="tab-pane fade">
+			<h1>#{bundle['stock.new']}</h1>
+			<h:form id="createStock">
+					<div id="newRecForm">
+						<div id="rName">
+							Stock Record Name
+							<h:inputText id="recName" value="#{stockRecordBean.name}" required="true"
+								requiredMessage="#{bundle['cat.name.validation']}">
+							</h:inputText>
+						</div>
+						<div id="rCat">
+							Category
+							<h:selectOneMenu id="recCatList" value="#{stockRecordBean.categoryId}"
+								required="true"
+								requiredMessage="Please select a category">
+								<f:selectItems value="#{categoryBean.dropdown}"/>				
+							</h:selectOneMenu>
+						</div>
+						<div id="rSell">
+							Sell Price
+							<h:inputText id="recSell" value="#{stockRecordBean.sellPrice}" required="true"
+								requiredMessage="#{bundle['cat.name.validation']}">
+							</h:inputText>
+						</div>
+						<div id="rCash">
+							Cash Buy Value
+							<h:inputText id="recCash" value="#{stockRecordBean.cashBuyPrice}" required="true"
+								requiredMessage="#{bundle['cat.name.validation']}">
+							</h:inputText>
+						</div>
+						<div id="rExch">
+							Exchange Value
+							<h:inputText id="recEx" value="#{stockRecordBean.exchangePrice}" required="true"
+								requiredMessage="#{bundle['cat.name.validation']}">
+							</h:inputText>
+						</div>
+						<div id="rNotes">
+							Notes
+							<h:inputTextarea id="recNotes" value="#{stockRecordBean.notes}" row="3" required="false"
+								requiredMessage="#{bundle['cat.name.validation']}">
+							</h:inputTextarea>
+						</div>
+						<div id="rKey">
+							Keywords
+							<h:inputTextarea id="recKeywords" value="#{stockRecordBean.keywords}" row="3" required="false"
+								requiredMessage="#{bundle['cat.name.validation']}">
+							</h:inputTextarea>
+						</div>
+						<div id="rBooleans">
+							<h:selectBooleanCheckbox value="#{stockRecordBean.requiresSerial}" /> Serial Number Required
+							<h:selectBooleanCheckbox value="#{stockRecordBean.requiresTest}" /> Test Required
+						</div>
+						<div id="rButton">
+							<h:commandButton value="Create" onclick="return validate()"
+							action="#{stockRecordBean.create}" styleClass="button" />
+						</div>
+					</div>
+			</h:form>
+		</div>
+		
+		<!--CATEGORY CREATION AND MODIFICATION-->
+		<div id="cats" class="tab-pane fade">
+			<h1>#{bundle['stock.mancat']}</h1>			
+			<h:form id="createCat">
+					<div id="userMod">
+						#{bundle['cat.name']}
+						<h:inputText id="catNewName" value="#{categoryBean.categoryName}" required="true"
+							requiredMessage="Please insert a new category name">
+						</h:inputText>
+					</div>
+					<div id="createCatButton">
+						<h:commandButton value="Create"
+							action="#{categoryBean.createCategory}" styleClass="button" />
+					</div>
+			</h:form>
+			<h:form id="modify">
+						<div id="catToMod">
+							#{bundle['cat.modify']}
+							<h:selectOneMenu id="catList" value="#{categoryBean.id}"
+								required="true"
+								requiredMessage="Please select a category">
+								<f:selectItems value="#{categoryBean.dropdown}"/>				
+							</h:selectOneMenu>
+						</div>
+						<div id="userMod">
+							#{bundle['cat.newname']}
+							<h:inputText id="catNewName" value="#{categoryBean.categoryName}" required="true"
+								requiredMessage="Please insert a new category name">
+							</h:inputText>
+						</div>
+						<div id="button">
+							<h:commandButton value="Modify"
+								action="#{categoryBean.modifyCategory}" styleClass="button" />
+						</div>	
+			</h:form>
+			<h:form id="delete">
+						<div id="catToDelete">
+							#{bundle['cat.delete']}
+							<h:selectOneMenu id="catType" value="#{categoryBean.id}"
+								required="true"
+								requiredMessage="Please select a category}">
+								<f:selectItems value="#{categoryBean.dropdown}"/>					
+							</h:selectOneMenu>
+						</div>
+						<div id="button">
+							<h:commandButton value="Delete"
+								action="#{categoryBean.deleteCategory}" styleClass="button" />
+						</div>
+			</h:form>
+				</div>
+			</div>
+		</div>		
 </h:body>
-</html>
+</html>	
+

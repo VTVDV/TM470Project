@@ -2,57 +2,30 @@ package com.veronica.tm470.beans;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 import com.veronica.tm470.db.CategoryDAO;
-import com.veronica.tm470.db.StockDAO;
 import com.veronica.tm470.db.UserDAO;
 import com.veronica.tm470.dbo.Category;
-import com.veronica.tm470.dbo.StockRecord;
 import com.veronica.tm470.dbo.User;
+import com.veronica.tm470.exceptions.WebConstants;
+import com.veronica.tm470.exceptions.WebDBException;
 
 @ManagedBean
 @SessionScoped
-public class StockBean extends AbstractBean implements Serializable
+public class CategoryBean extends AbstractBean implements Serializable
 {
-	private String searchTerm;
 	private String categoryName;
 	private Map<Integer, Category> categories;
 	private Map<String,Integer> dropdown;
 	private int id; //ID of selected category
-	private List<StockRecord> stockRecords;
-	
-	public void getStockRecordList()
-	{
-		StockDAO dao = new StockDAO();
-		try
-		{
-			stockRecords = dao.getStockRecords(searchTerm);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();			
-		}
-	}
-	
-	
-	public List<StockRecord> getStockRecords() {
-		return stockRecords;
-	}
-
-
-
-	public void setStockRecords(List<StockRecord> stockRecords) {
-		this.stockRecords = stockRecords;
-	}
-
-
-
+		
 	public Map<String, Integer> getDropdown() 
 	{
 		return dropdown;
@@ -66,23 +39,7 @@ public class StockBean extends AbstractBean implements Serializable
 	public void setId(int id) 
 	{
 		this.id = id;
-	}
-	
-	public String getSearch()
-	{
-		return searchTerm;
-	}
-
-	public String getSearchTerm() 
-	{
-		return searchTerm;
-	}
-
-	public void setSearchTerm(String searchTerm) 
-	{
-		this.searchTerm = searchTerm;
-	}
-		
+	}		
 	
 	public String getCategoryName()
 	{
@@ -145,9 +102,13 @@ public class StockBean extends AbstractBean implements Serializable
 			getCategories();
 			return null;
 		} 
-		catch (Exception e) 
+		catch (WebDBException e) 
 		{
-			e.printStackTrace();
+			switch (e.getErrorCode()) {
+				case WebConstants.CHILD_RECORD_FOUND:
+					FacesContext.getCurrentInstance().addMessage("delete:catToDelete", new FacesMessage(getBundle().getString("cat.deleteException")));
+				break;
+			}
 		}
 		return null;
 	}

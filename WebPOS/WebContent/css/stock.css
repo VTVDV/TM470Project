@@ -29,4 +29,8 @@ body {
     padding: 5%;
 }
 
+.validation-error {
+	border: 1px solid red;
+}
+
 
