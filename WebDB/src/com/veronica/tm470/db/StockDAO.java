@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.veronica.tm470.dbo.*;
+import com.veronica.tm470.exceptions.WebConstants;
+import com.veronica.tm470.exceptions.WebDBException;
 
 public class StockDAO extends AbstractDAO
 {
@@ -180,6 +182,44 @@ public class StockDAO extends AbstractDAO
 				close(statement, connection);
 			}
 			catch(SQLException sqlxstate)
+			{
+				sqlxstate.printStackTrace();
+				System.out.println("There was an error closing the statement.");
+			}			
+		}
+	}
+	
+	public void deleteStockRecord(int id) throws WebDBException
+	{
+		Connection connection = null;
+		PreparedStatement statement = null;
+		
+		try 
+		{
+			connection = getConnection();
+			statement = connection.prepareStatement("DELETE FROM tbl_record WHERE REC_ID = ?");
+			statement.setInt(1, id);
+			statement.executeUpdate();
+		}
+		catch(SQLException e) 
+		{
+			if (e.getErrorCode() == WebConstants.ER_ROW_IS_REFERENCED) {
+				throw new WebDBException(WebConstants.CHILD_RECORD_FOUND);
+			} else {
+				e.printStackTrace();
+			}
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				close(statement, connection);
+			}
+			catch(Exception sqlxstate)
 			{
 				sqlxstate.printStackTrace();
 				System.out.println("There was an error closing the statement.");

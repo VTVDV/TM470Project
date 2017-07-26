@@ -60,6 +60,25 @@ public class StockRecordBean extends AbstractBean implements Serializable
 		}
 	}
 	
+	public String deleteRecord()
+	{
+		System.out.println("hi");
+		StockDAO dao = new StockDAO();
+		try 
+		{
+			dao.deleteStockRecord(id);			
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			clearForm();
+		}
+		return "stockManagement";
+	}
+	
 	//Uses id from dropdown to retrieve and assign category.
 	public void getCategoryObject()
 	{

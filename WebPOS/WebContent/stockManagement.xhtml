@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" 
 	  xmlns:f = "http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets" 
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
       
 <h:head>
 	<link href="#{request.contextPath}/css/stock.css" rel="stylesheet" type="text/css"/> 
@@ -13,6 +14,12 @@
 	<script src="js/stockManagement.js"></script>
   <title><ui:insert name="title">#{bundle['stock.title']}</ui:insert></title>
 </h:head>
+
+<!-- Test if user is logged in. -->
+<c:if test="#{userBean.name eq null}">
+	<f:event type="preRenderView" listener="#{userBean.redirect}" />
+	<f:attribute name="page" value="login"/>
+</c:if>
 
 <!-- Populate drop down list of categories -->
 <f:event type="preRenderView" listener="#{categoryBean.populateDropdown}" />
@@ -26,8 +33,8 @@
 
 <div class="box">		
 	<ul class="nav nav-tabs" id="tabs">
-	  <li class="active"><a data-toggle="tab" href="#search">#{bundle['stock.search']}</a></li>
-	  <li style=""><a data-toggle="tab" href="#modifyStock">#{bundle['stock.modify']}</a></li>
+	  <li id="searchTab" class="active"><a data-toggle="tab" href="#search">#{bundle['stock.search']}</a></li>
+	  <li id="modifyStockTab" style="display: none;"><a data-toggle="tab" href="#modifyStock">#{bundle['stock.modify']}</a></li>
 	  <li><a data-toggle="tab" href="#newStock">#{bundle['stock.new']}</a></li>
 	  <li><a data-toggle="tab" href="#cats">#{bundle['stock.mancat']}</a></li>
 	  
@@ -52,14 +59,19 @@
 						<f:facet name="header">
 							Stock Record
 						</f:facet>
-						#{stockRecord.name}
+						<p id="sr#{stockRecord.id}">#{stockRecord.name}</p>
+						<p id="notes#{stockRecord.id}" style='display: none;'>#{stockRecord.notes}</p>
+						<p id="keys#{stockRecord.id}" style='display: none;'>#{stockRecord.keywords}</p>
+						<p id="serial#{stockRecord.id}" style='display: none;'>#{stockRecord.requiresSerial}</p>
+						<p id="test#{stockRecord.id}" style='display: none;'>#{stockRecord.requiresTest}</p>
 					</h:column>
 					<h:column>
 						<f:facet name="header">
 							Category
 						</f:facet>
 						#{stockRecord.category.name}
-					</h:column>
+						<p id="cid#{stockRecord.id}" style='display: none;'>#{stockRecord.category.id}</p>
+					</h:column >
 					<h:column>
 						<f:facet name="header">
 							Quantity
@@ -70,25 +82,25 @@
 						<f:facet name="header">
 							Sell Price
 						</f:facet>
-						#{stockRecord.sellPrice}
+						<p id="sp#{stockRecord.id}">#{stockRecord.sellPrice}</p>
 					</h:column>
 					<h:column>
 						<f:facet name="header">
 							Cash
 						</f:facet>
-						#{stockRecord.cashBuyPrice}
+						<p id="cash#{stockRecord.id}">#{stockRecord.cashBuyPrice}</p>
 					</h:column>
 					<h:column>
 						<f:facet name="header">
 							Exchange
 						</f:facet>
-						#{stockRecord.exchangePrice}
+						<p id="exch#{stockRecord.id}">#{stockRecord.exchangePrice}</p>
 					</h:column>		
 					<h:column>
 						<f:facet name="header">
 							Action
 						</f:facet>
-						<button class="stock-button" id="#{stockRecord.id}"></button>
+						<button class="stock-button" id="#{stockRecord.id}" onclick="onStockClick(#{stockRecord.id})"></button>
 					</h:column>			
 				</h:dataTable>
 			</h:panelGroup>
@@ -98,6 +110,59 @@
 		<!-- STOCK RECORD MODIFICATION -->
 		<div id="modifyStock" class="tab-pane fade">
 			<h1>#{bundle['stock.modify']}</h1>
+			<h:form id="modStock">		
+				<div id="mdId" style="display: none;">
+					<h:outputText id="modId" value="#{stockRecordBean.id}">
+					</h:outputText>				
+				</div>	
+				<div id="msName">
+					Stock Record
+					<h:inputText id="modName" value="#{stockRecordBean.name}" >
+					</h:inputText>
+				</div>
+				<div id="msCat">
+					Category
+					<h:selectOneMenu id="modCatList" value="#{stockRecordBean.categoryId}"
+						required="true"
+						requiredMessage="Please select a category">
+						<f:selectItems value="#{categoryBean.dropdown}"/>				
+					</h:selectOneMenu>
+				</div>
+				<div id="msSell">
+					Sell Price
+					<h:inputText id="modSell" value="#{stockRecordBean.sellPrice}">
+					</h:inputText>
+				</div>
+				<div id="msCash">
+					Cash Buy Price
+					<h:inputText id="modCash" value="#{stockRecordBean.cashBuyPrice}">
+					</h:inputText>
+				</div>
+				<div id="msExchange">
+					Exchange Value
+					<h:inputText id="modExchange" value="#{stockRecordBean.exchangePrice}">
+					</h:inputText>
+				</div>
+				<div id="msNotes">
+					Notes
+					<h:inputTextarea id="modNotes" value="#{stockRecordBean.notes}">
+					</h:inputTextarea>
+				</div>
+				<div id="msKeywords">
+					Keywords
+					<h:inputTextarea id="modKeywords" value="#{stockRecordBean.keywords}" />
+				</div>
+				<div id="msBooleans">
+					<h:selectBooleanCheckbox id="modSerial" value="#{stockRecordBean.requiresSerial}" /> Serial Number Required
+					<h:selectBooleanCheckbox id="modTest" value="#{stockRecordBean.requiresTest}" /> Test Required
+				</div>
+				<div id="msButtons">
+					<h:commandButton value="Modify"
+					action="#{stockRecordBean.create}" styleClass="button" />
+					<h:commandButton value="Delete"
+					action="#{stockRecordBean.deleteRecord}" styleClass="button" />
+				</div>
+			</h:form>
 		</div>
 		
 		<!--STOCK RECORD CREATION-->
