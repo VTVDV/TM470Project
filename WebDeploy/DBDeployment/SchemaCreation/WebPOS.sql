@@ -11,7 +11,7 @@ CREATE TABLE `tbl_user` (
 
 /*Schema for creating a stock record table*/
 CREATE TABLE `tbl_record` (
-  `REC_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `REC_ID` int(12) unsigned zerofill NOT NULL,
   `REC_NAME` varchar(45) NOT NULL,
   `REC_CATEGORY_ID` int(11) NOT NULL,
   `REC_SELL` double NOT NULL,
@@ -21,11 +21,12 @@ CREATE TABLE `tbl_record` (
   `REC_KEYWORDS` varchar(1000) DEFAULT NULL,
   `REC_REQ_SERIAL` tinyint(1) NOT NULL,
   `REC_REQ_TEST` tinyint(1) NOT NULL,
+  `REC_SEARCHTERMS` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`REC_ID`),
   UNIQUE KEY `REC_ID_UNIQUE` (`REC_ID`),
   KEY `FK_CATEGORY_ID_idx` (`REC_CATEGORY_ID`),
   CONSTRAINT `FK_CATEGORY_ID` FOREIGN KEY (`REC_CATEGORY_ID`) REFERENCES `tbl_category` (`CAT_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
   
   /*Schema for creating a stock item table*/
