@@ -1,6 +1,7 @@
 package com.veronica.tm470.beans;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -9,6 +10,9 @@ import com.veronica.tm470.db.CategoryDAO;
 import com.veronica.tm470.db.StockDAO;
 import com.veronica.tm470.dbo.Category;
 import com.veronica.tm470.dbo.StockRecord;
+
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 
 @ManagedBean
 @SessionScoped
@@ -25,9 +29,15 @@ public class StockRecordBean extends AbstractBean implements Serializable
 	
 	private String notes;
 	private String keywords;
+	private String searchTerm;
 	
 	private boolean requiresSerial;
 	private boolean requiresTest;
+	
+	//search = What the user is searching for.
+	private String search;
+	private StockRecord selectedRecord;
+	private List<StockRecord> stockRecords;
 		
 	//Creates a new Stock Record
 	public String create()
@@ -43,9 +53,10 @@ public class StockRecordBean extends AbstractBean implements Serializable
 			stockRecord.setCashBuyPrice(cashBuyPrice);
 			stockRecord.setExchangePrice(exchangePrice);
 			stockRecord.setNotes(notes);
-			stockRecord.setKeywords(generateKeywords());
+			stockRecord.setKeywords(keywords);
 			stockRecord.setRequiresSerial(requiresSerial);
 			stockRecord.setRequiresTest(requiresTest);
+			stockRecord.setSearchTerms();
 			dao.addStockRecord(stockRecord);
 			return "stockManagement";
 		} 
@@ -62,11 +73,13 @@ public class StockRecordBean extends AbstractBean implements Serializable
 	
 	public String deleteRecord()
 	{
-		System.out.println("hi");
+		System.out.println(id);
 		StockDAO dao = new StockDAO();
 		try 
 		{
-			dao.deleteStockRecord(id);			
+			dao.deleteStockRecord(id);
+			stockRecords = null; 
+			
 		}
 		catch (Exception e) 
 		{
@@ -76,7 +89,38 @@ public class StockRecordBean extends AbstractBean implements Serializable
 		{
 			clearForm();
 		}
-		return "stockManagement";
+		return null;
+	}
+	
+	public String modifyRecord()
+	{
+		StockDAO dao = new StockDAO();
+		try
+		{
+			getCategoryObject();
+			StockRecord stockRecord = new StockRecord();
+			stockRecord.setName(name);
+			stockRecord.setCategory(category);
+			stockRecord.setSellPrice(sellPrice);
+			stockRecord.setCashBuyPrice(cashBuyPrice);
+			stockRecord.setExchangePrice(exchangePrice);
+			stockRecord.setNotes(notes);
+			stockRecord.setKeywords(keywords);
+			stockRecord.setRequiresSerial(requiresSerial);
+			stockRecord.setRequiresTest(requiresTest);
+			stockRecord.setSearchTerms();
+			dao.modifyStockRecord(stockRecord);
+			stockRecords = null;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			clearForm();
+		}
+		return null;
 	}
 	
 	//Uses id from dropdown to retrieve and assign category.
@@ -97,89 +141,151 @@ public class StockRecordBean extends AbstractBean implements Serializable
 	{
 		 return keywords = keywords + " " + name + " " + category.getName();
 	}
+	
+	public void getStockRecordList()
+	{
+		StockDAO dao = new StockDAO();
+		try
+		{
+			stockRecords = dao.getStockRecords(search);
+		}
+		catch(Exception e)
+		{	
+			e.printStackTrace();			
+		}
+	}	
+	
+	public List<StockRecord> getStockRecords() {
+		return stockRecords;
+	}
 
-	public int getId() {
+	public void setStockRecords(List<StockRecord> stockRecords) {
+		this.stockRecords = stockRecords;
+	}
+
+	public int getId() 
+	{
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(int id) 
+	{
 		this.id = id;
 	}
 
-	public int getCategoryId() {
+	public int getCategoryId() 
+	{
 		return categoryId;
 	}
 
-	public void setCategoryId(int categoryId) {
+	public void setCategoryId(int categoryId) 
+	{
 		this.categoryId = categoryId;
 	}
 
-	public String getName() {
+	public String getName() 
+	{
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name) 
+	{
 		this.name = name;
 	}
 
-	public double getSellPrice() {
+	public double getSellPrice() 
+	{
 		return sellPrice;
 	}
 
-	public void setSellPrice(double sellPrice) {
+	public void setSellPrice(double sellPrice) 
+	{
 		this.sellPrice = sellPrice;
 	}
 
-	public double getCashBuyPrice() {
+	public double getCashBuyPrice() 
+	{
 		return cashBuyPrice;
 	}
 
-	public void setCashBuyPrice(double cashBuyPrice) {
+	public void setCashBuyPrice(double cashBuyPrice) 
+	{
 		this.cashBuyPrice = cashBuyPrice;
 	}
 
-	public double getExchangePrice() {
+	public double getExchangePrice() 
+	{
 		return exchangePrice;
 	}
 
-	public void setExchangePrice(double exchangePrice) {
+	public void setExchangePrice(double exchangePrice) 
+	{
 		this.exchangePrice = exchangePrice;
 	}
 
-	public String getNotes() {
+	public String getNotes() 
+	{
 		return notes;
 	}
 
-	public void setNotes(String notes) {
+	public void setNotes(String notes) 
+	{
 		this.notes = notes;
 	}
 
-	public String getKeywords() {
+	public String getKeywords() 
+	{
 		return keywords;
 	}
 
-	public void setKeywords(String keywords) {
+	public void setKeywords(String keywords) 
+	{
 		this.keywords = keywords;
 	}
 
-	public boolean isRequiresSerial() {
+	public boolean isRequiresSerial() 
+	{
 		return requiresSerial;
 	}
 
-	public void setRequiresSerial(boolean requiresSerial) {
+	public void setRequiresSerial(boolean requiresSerial) 
+	{
 		this.requiresSerial = requiresSerial;
 	}
 
-	public boolean isRequiresTest() {
+	public boolean isRequiresTest() 
+	{
 		return requiresTest;
 	}
 
-	public void setRequiresTest(boolean requiresTest) {
+	public void setRequiresTest(boolean requiresTest) 
+	{
 		this.requiresTest = requiresTest;
 	}	
 	
+	public StockRecord getSelectedRecord() 
+	{
+		return selectedRecord;
+	}
+
+	public void setSelectedRecord(StockRecord selectedRecord) 
+	{
+		this.selectedRecord = selectedRecord;
+	}
+	
+	public String getSearchTerm() 
+	{
+		return searchTerm;
+	}
+
+	public void setSearchTerm(String searchTerm) 
+	{
+		this.searchTerm = searchTerm;
+	}
+
 	@Override
-	protected void clearForm() {
+	protected void clearForm() 
+	{
 		category = null;
 		categoryId = 0;
 		name = null;
@@ -191,4 +297,16 @@ public class StockRecordBean extends AbstractBean implements Serializable
 		requiresSerial = false;
 		requiresTest = false;
 	}
+
+	public String getSearch() 
+	{
+		return search;
+	}
+
+	public void setSearch(String search) 
+	{
+		this.search = search;
+	}
+	
+	
 }

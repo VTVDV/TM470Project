@@ -1,12 +1,14 @@
 package com.veronica.tm470.dbo;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class StockRecord 
 {
 	private int id;
 	private Category category;
 	private String name;
+	private String barcode;
 	
 	private ArrayList<StockItem> stockItems;
 	
@@ -16,6 +18,7 @@ public class StockRecord
 	
 	private String notes;
 	private String keywords;
+	private String searchTerms;
 	
 	private boolean requiresSerial;
 	private boolean requiresTest;
@@ -126,6 +129,31 @@ public class StockRecord
 	public void setStockItems(ArrayList<StockItem> stockItems) 
 	{
 		this.stockItems = stockItems;
-	}				
+	}
+
+	public String getSearchTerms() {
+		return searchTerms;
+	}
+
+	public void setSearchTerms() {
+		this.searchTerms = keywords + " " + name + " " + barcode + category.getName();
+	}
+
+	public String getBarcode() {
+		return barcode;
+	}
+
+	public void setBarcode() 
+	{
+		this.barcode = barcode.format("%012d", id);
+		System.out.println(barcode);
+	}
+
+	public void setSearchTerms(String searchTerms) 
+	{
+		this.searchTerms = searchTerms;
+	}
+	
+	
 
 }

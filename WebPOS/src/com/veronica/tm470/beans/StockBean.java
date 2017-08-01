@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -26,7 +27,7 @@ public class StockBean extends AbstractBean implements Serializable
 	private Map<String,Integer> dropdown;
 	private int id; //ID of selected category
 	private List<StockRecord> stockRecords;
-	
+		
 	public void getStockRecordList()
 	{
 		StockDAO dao = new StockDAO();
@@ -35,7 +36,7 @@ public class StockBean extends AbstractBean implements Serializable
 			stockRecords = dao.getStockRecords(searchTerm);
 		}
 		catch(Exception e)
-		{
+		{	
 			e.printStackTrace();			
 		}
 	}
@@ -68,11 +69,6 @@ public class StockBean extends AbstractBean implements Serializable
 		this.id = id;
 	}
 	
-	public String getSearch()
-	{
-		return searchTerm;
-	}
-
 	public String getSearchTerm() 
 	{
 		return searchTerm;

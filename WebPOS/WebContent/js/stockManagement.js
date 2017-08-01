@@ -45,7 +45,7 @@ function onStockClick(id)
 {
 	$("#modifyStockTab").css('display', 'block');
 	$('.nav-tabs a[href="#modifyStock"]').tab('show');
-	//$("#modStock\\:modName").val("nuggets");
+	//$("#modStock\\:modName").val("nuggets");	
 	$("#modStock\\:modName").val($("#sr" + id).text());
 	$("#modStock\\:modCatList").val($("#cid" + id).text())
 	$("#modStock\\:modSell").val($("#sp" + id).text());
@@ -55,6 +55,6 @@ function onStockClick(id)
 	$("#modStock\\:modKeywords").val($("#keys" + id).text());
 	$("#modStock\\:modSerial").prop('checked', $("#serial" + id).text());
 	$("#modStock\\:modTest").prop('checked', $("#test" + id).text());
-	$("#modStock\\:modId").text(id);
+	$("#modStock\\:modId").val(id);
 }
 

@@ -30,8 +30,9 @@ public class StockDAO extends AbstractDAO
 					+ "REC_NOTE,"
 					+ "REC_KEYWORDS,"
 					+ "REC_REQ_SERIAL,"
-					+ "REC_REQ_TEST) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					+ "REC_REQ_TEST,"
+					+ "REC_SEARCHTERMS) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			statement.setString(1, stockRecord.getName());
 			statement.setInt(2, stockRecord.getCategory().getId());
 			statement.setDouble(3, stockRecord.getSellPrice());
@@ -41,6 +42,7 @@ public class StockDAO extends AbstractDAO
 			statement.setString(7, stockRecord.getKeywords());
 			statement.setInt(8, stockRecord.isRequiresSerial() ? 1 : 0 );
 			statement.setInt(9, stockRecord.isRequiresTest() ? 1 : 0 );
+			statement.setString(10, stockRecord.getSearchTerms());
 			statement.executeUpdate();
 		}
 		catch(SQLException e) 
@@ -82,11 +84,11 @@ public class StockDAO extends AbstractDAO
 			{
 				if (i == 0)
 				{
-					builder.append("WHERE records.REC_KEYWORDS LIKE ? ");
+					builder.append("WHERE records.REC_SEARCHTERMS LIKE ? ");
 				}
 				else
 				{
-					builder.append("AND records.REC_KEYWORDS LIKE ? ");
+					builder.append("AND records.REC_SEARCHTERMS LIKE ? ");
 				}
 			}
 						
@@ -114,7 +116,9 @@ public class StockDAO extends AbstractDAO
 				stockRecord.setKeywords(rs.getString("REC_KEYWORDS"));
 				stockRecord.setRequiresSerial(rs.getBoolean("REC_REQ_SERIAL"));
 				stockRecord.setRequiresTest(rs.getBoolean("REC_REQ_TEST"));					
-				stockRecords.add(stockRecord);
+				stockRecord.setBarcode();
+				stockRecord.setSearchTerms();
+				stockRecords.add(stockRecord); 
 			}			
 			
 		}
@@ -168,6 +172,7 @@ public class StockDAO extends AbstractDAO
 			statement.setDouble(8, stockItem.getSold());
 			statement.setDouble(9, stockItem.getBoughtCash());
 			statement.setDouble(10, stockItem.getBoughtExchange());
+			
 			statement.executeUpdate();
 		}
 		catch(SQLException e) 
@@ -199,6 +204,65 @@ public class StockDAO extends AbstractDAO
 			connection = getConnection();
 			statement = connection.prepareStatement("DELETE FROM tbl_record WHERE REC_ID = ?");
 			statement.setInt(1, id);
+			statement.executeUpdate();
+		}
+		catch(SQLException e) 
+		{
+			if (e.getErrorCode() == WebConstants.ER_ROW_IS_REFERENCED) {
+				throw new WebDBException(WebConstants.CHILD_RECORD_FOUND);
+			} else {
+				e.printStackTrace();
+			}
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				close(statement, connection);
+			}
+			catch(Exception sqlxstate)
+			{
+				sqlxstate.printStackTrace();
+				System.out.println("There was an error closing the statement.");
+			}			
+		}
+	}
+	
+	public void modifyStockRecord(StockRecord stockRecord) throws WebDBException
+	{
+		Connection connection = null;
+		PreparedStatement statement = null;
+		
+		try 
+		{
+			connection = getConnection();
+			statement = connection.prepareStatement("UPDATE tbl_record SET "
+					+ "REC_NAME = ?, "
+					+ "REC_CATEGORY_ID = ?, "
+					+ "REC_SELL = ?, "
+					+ "REC_CASH = ?, "
+					+ "REC_EXCHANGE = ?,"
+					+ "REC_NOTE = ?,"
+					+ "REC_KEYWORDS = ?,"
+					+ "REC_REQ_SERIAL = ?, "
+					+ "REC_REQ_TEST = ?, "
+					+ "REC_SEARCHTERMS = ?, "					
+					+ " WHERE REC_ID = ? ");
+			statement.setString(1, stockRecord.getName());
+			statement.setInt(2, stockRecord.getCategory().getId());
+			statement.setDouble(3, stockRecord.getSellPrice());
+			statement.setDouble(4, stockRecord.getCashBuyPrice());
+			statement.setDouble(5, stockRecord.getExchangePrice());
+			statement.setString(6, stockRecord.getNotes());
+			statement.setString(7, stockRecord.getKeywords());
+			statement.setInt(8, stockRecord.isRequiresSerial() ? 1 : 0 );
+			statement.setInt(9, stockRecord.isRequiresTest() ? 1 : 0 );
+			statement.setString(10, stockRecord.getSearchTerms());
+			statement.setInt(11,stockRecord.getId());
 			statement.executeUpdate();
 		}
 		catch(SQLException e) 

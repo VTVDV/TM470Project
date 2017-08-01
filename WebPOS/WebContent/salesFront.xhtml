@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:f = "http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<link href="#{request.contextPath}/css/sales.css" rel="stylesheet" type="text/css"/> 
+	<link href="#{request.contextPath}/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+  <title><ui:insert name="title">#{bundle['sales.title']}</ui:insert></title>
+</h:head>
+
+<!-- Test if user is logged in. -->
+<c:if test="#{userBean.name eq null}">
+	<f:event type="preRenderView" listener="#{userBean.redirect}" />
+	<f:attribute name="page" value="login"/>
+</c:if>
+
+<h:body>
+<div class = "header">
+	<div class = "headerText">
+		<div class = "tileName"><p><span class="glyphicon glyphicon-arrow-left"></span> <a href="dash.xhtml">#{bundle['webpos.return']}</a></p></div>
+	</div>
+</div>
+
+<div class="box">
+</div>
+
+</h:body> 
+</html>
