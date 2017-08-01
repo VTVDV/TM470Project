@@ -27,10 +27,14 @@ body {
     margin-left: 25%;
     margin-right: 25%;
     padding: 5%;
+    margin-bottom: 26%;
 }
 
 .validation-error {
 	border: 1px solid red;
 }
 
+.glyphicon {
+	font-size: 32px !important;
+}
 

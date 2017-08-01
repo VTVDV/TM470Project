@@ -1,34 +1,114 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	  xmlns:f = "http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets" 
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:c="http://java.sun.com/jsp/jstl/core"
-      xmlns:p="http://primefaces.org/ui">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-	<link href="#{request.contextPath}/css/sales.css" rel="stylesheet" type="text/css"/> 
-	<link href="#{request.contextPath}/css/bootstrap.css" rel="stylesheet" type="text/css"/>
-	<script src="js/jquery-3.2.1.min.js"></script>
-	<script src="js/bootstrap.js"></script>
-  <title><ui:insert name="title">#{bundle['sales.title']}</ui:insert></title>
+	<link href="#{request.contextPath}/css/sales.css" rel="stylesheet"
+		type="text/css" />
+	<title><ui:insert name="title">#{bundle['sales.title']}</ui:insert></title>
 </h:head>
 
 <!-- Test if user is logged in. -->
 <c:if test="#{userBean.name eq null}">
 	<f:event type="preRenderView" listener="#{userBean.redirect}" />
-	<f:attribute name="page" value="login"/>
+	<f:attribute name="page" value="login" />
 </c:if>
 
 <h:body>
-<div class = "header">
-	<div class = "headerText">
-		<div class = "tileName"><p><span class="glyphicon glyphicon-arrow-left"></span> <a href="dash.xhtml">#{bundle['webpos.return']}</a></p></div>
+	
+
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north">
+		<div class="header">
+		<div class="headerText">
+			<div class="tileName">
+				<p>
+					<span class="glyphicon glyphicon-arrow-left"></span> <a
+						href="dash.xhtml">#{bundle['webpos.return']}</a>
+				</p>
+			</div>
+		</div>
 	</div>
-</div>
+	</p:layoutUnit>
+		<p:layoutUnit position="west" resizable="true" size="100" minSize="50"
+			maxSize="250">
+		Left
+	</p:layoutUnit>
+		<p:layoutUnit position="center">
+		Middle
+	</p:layoutUnit>
+		<p:layoutUnit position="south" resizable="true">	        
+	        <p:ribbon>
+	        	<p:tab title="Sell">
+	        		<p:ribbonGroup label="">
+						<p:commandButton value="Quantity" icon="ui-icon-calculator" styleClass="ui-ribbon-bigbutton" type="button" />
+						<p:commandButton value="Discount" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+					</p:ribbonGroup>
+					<p:ribbonGroup label="">
+						<p:commandButton value="Misc. Item" styleClass="ui-ribbon-bigbutton"
+							style="width:100px" type="button" />
+						<p:commandButton value="Deposit" styleClass="ui-ribbon-bigbutton"
+							style="width:100px" type="button" />
+					</p:ribbonGroup>
+					<p:ribbonGroup label="">
+						<p:commandButton value="Void Item"
+							styleClass="ui-ribbon-bigbutton ui-state-default  ui-corner-all"
+							style="width:100px" type="button" />
+						<p:commandButton value="Discard Transaction"
+							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+					</p:ribbonGroup>
+	        	</p:tab>
+	        	<p:tab title="Buy">
+					<p:ribbonGroup label="">
+						<p:commandButton value="Book for Test"
+							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Check Tests"
+							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Buy In" styleClass="ui-ribbon-bigbutton"
+							style="width:100px" type="button" />
+					</p:ribbonGroup>
+				</p:tab>
+				<p:tab title="Refunds">
+					<p:ribbonGroup label="">
+						<p:commandButton value="Book for Waranty Test"
+							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<!-- TEST IF USER IS ADMIN -->
+						<c:if test="#{userBean.userType eq 1}">
+							<p:commandButton value="Refund" styleClass="ui-ribbon-bigbutton"
+								style="width:100px" type="button" />
+						</c:if>
+						<p:commandButton value="Exchange" styleClass="ui-ribbon-bigbutton"
+							style="width:100px" type="button" />
+					</p:ribbonGroup>
+				</p:tab>
+				<p:tab title="Settle">
+					<p:ribbonGroup label="">
+						<p:commandButton value="Cash" styleClass="ui-ribbon-bigbutton"
+							style="width:100px" type="button" />
+						<p:commandButton value="Card" styleClass="ui-ribbon-bigbutton"
+							style="width:100px" type="button" />
+						<p:commandButton value="Voucher" styleClass="ui-ribbon-bigbutton"
+							style="width:100px" type="button" />
+					</p:ribbonGroup>
+				</p:tab>
+				<p:tab title="Misc.">
+					<p:ribbonGroup label="">
+						<p:commandButton value="Reprint Receipt"
+							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<!-- TEST IF USER IS ADMIN -->
+						<c:if test="#{userBean.userType eq 1}">
+							<p:commandButton value="Paid Out" styleClass="ui-ribbon-bigbutton"
+								style="width:100px" type="button" />
+						</c:if>
+					</p:ribbonGroup>
+				</p:tab>
+	        </p:ribbon>
+	    </p:layoutUnit>
+	</p:layout>
 
-<div class="box">
-</div>
-
-</h:body> 
+</h:body>
 </html>
