@@ -33,8 +33,3 @@ body {
 .validation-error {
 	border: 1px solid red;
 }
-
-.glyphicon {
-	font-size: 32px !important;
-}
-

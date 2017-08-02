@@ -11,7 +11,7 @@ CREATE TABLE `tbl_user` (
 
 /*Schema for creating a stock record table*/
 CREATE TABLE `tbl_record` (
-  `REC_ID` int(12) unsigned zerofill NOT NULL,
+  `REC_ID` int(12) zerofill NOT NULL,
   `REC_NAME` varchar(45) NOT NULL,
   `REC_CATEGORY_ID` int(11) NOT NULL,
   `REC_SELL` double NOT NULL,

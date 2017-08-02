@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" 
-      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f = "http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html">
       
 <h:head>
@@ -42,7 +43,16 @@
 							 requiredMessage="#{bundle['welcome.pass.validation']}">
 				</h:inputSecret>
 			</div>
-				<div id="button">
+			<div id="page">
+			#{bundle['welcome.page']}
+				<h:selectOneMenu value="#{userBean.page}">
+					<f:selectItem itemValue="salesFront" itemLabel="Sales Front"/>
+					<f:selectItem itemValue="dash" itemLabel="Tests"/>
+					<f:selectItem itemValue="stockManagement" itemLabel="Stock Management"/>					
+					<f:selectItem itemValue="dash" itemLabel="Dashboard"/>
+				</h:selectOneMenu>
+			</div>
+			<div id="button">
 				<h:commandButton value="#{bundle['welcome.button']}" action="#{userBean.validate}" styleClass="button"/>
 				</div>
 			</div>

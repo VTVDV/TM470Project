@@ -34,12 +34,52 @@
 		</div>
 	</div>
 	</p:layoutUnit>
-		<p:layoutUnit position="west" resizable="true" size="100" minSize="50"
-			maxSize="250">
-		Left
+	<p:layoutUnit position="west" resizable="true" size="150" minSize="100" maxSize="250">
+		<p:fieldset legend="Customer Info" toggleable="true" toggleSpeed="200">
+	        <h:panelGrid columns="1" cellpadding="5">
+       			<p:commandButton value="Select Customer" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+	        </h:panelGrid>
+    	</p:fieldset>
+    	<!-- QUANTITY - Should appear/disappear when quantity ribbon button pressed. -->
+		<p:fieldset legend="Quantity" toggleable="true" toggleSpeed="200">
+	        <h:panelGrid columns="1" cellpadding="5">
+      			Quantity
+				<h:inputText id="modSell" value="#{stockRecordBean.sellPrice}">
+				</h:inputText>
+	        </h:panelGrid>
+    	</p:fieldset>
+    	<p:fieldset legend="Stock Search" toggleable="true" toggleSpeed="200">
+	        <h:panelGrid columns="1" cellpadding="5">
+      			Stock Search
+				<h:inputText id="modSell" value="#{stockRecordBean.sellPrice}">
+				</h:inputText>
+	        </h:panelGrid>
+    	</p:fieldset>
 	</p:layoutUnit>
-		<p:layoutUnit position="center">
-		Middle
+	<p:layoutUnit position="east" resizable="true">
+		<p:fieldset legend="Settle" toggleable="true" toggleSpeed="200">
+	        <h:panelGrid columns="1" cellpadding="5">
+       			<p:commandButton value="Cash" styleClass="ui-ribbon-bigbutton"
+					style="width:100px" type="button" />
+				<p:commandButton value="Card" styleClass="ui-ribbon-bigbutton"
+					style="width:100px" type="button" />
+				<p:commandButton value="Voucher" styleClass="ui-ribbon-bigbutton"
+					style="width:100px" type="button" />
+	        </h:panelGrid>
+    	</p:fieldset>
+	</p:layoutUnit>
+	<p:layoutUnit position="center">
+		<p:dataTable var="transactions" value="">
+		    <p:column headerText="Qty.">
+		        <h:outputText value="" />
+		    </p:column>		 
+		    <p:column headerText="Name">
+		        <h:outputText value="" />
+		    </p:column>		 
+		    <p:column headerText="Value">
+		        <h:outputText value="" />
+		    </p:column>
+		</p:dataTable>
 	</p:layoutUnit>
 		<p:layoutUnit position="south" resizable="true">	        
 	        <p:ribbon>
@@ -68,8 +108,12 @@
 							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
 						<p:commandButton value="Check Tests"
 							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+					</p:ribbonGroup>
+					<p:ribbonGroup label="">
 						<p:commandButton value="Buy In" styleClass="ui-ribbon-bigbutton"
 							style="width:100px" type="button" />
+						<p:commandButton value="Buy Back" styleClass="ui-ribbon-bigbutton"
+						style="width:100px" type="button" />
 					</p:ribbonGroup>
 				</p:tab>
 				<p:tab title="Refunds">
@@ -82,16 +126,6 @@
 								style="width:100px" type="button" />
 						</c:if>
 						<p:commandButton value="Exchange" styleClass="ui-ribbon-bigbutton"
-							style="width:100px" type="button" />
-					</p:ribbonGroup>
-				</p:tab>
-				<p:tab title="Settle">
-					<p:ribbonGroup label="">
-						<p:commandButton value="Cash" styleClass="ui-ribbon-bigbutton"
-							style="width:100px" type="button" />
-						<p:commandButton value="Card" styleClass="ui-ribbon-bigbutton"
-							style="width:100px" type="button" />
-						<p:commandButton value="Voucher" styleClass="ui-ribbon-bigbutton"
 							style="width:100px" type="button" />
 					</p:ribbonGroup>
 				</p:tab>

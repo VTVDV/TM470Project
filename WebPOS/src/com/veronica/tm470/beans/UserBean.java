@@ -23,6 +23,8 @@ public class UserBean extends AbstractBean implements Serializable
 	private String pass;
 	private int userType;
 	private int id;
+	//Page to redirect user to.
+	private String page;
 	
 	public int getUserType() 
 	{
@@ -55,6 +57,14 @@ public class UserBean extends AbstractBean implements Serializable
 	public void setPass(String pass) 
 	{
 		this.pass = pass;
+	}	
+	public String getPage() 
+	{
+		return page;
+	}
+	public void setPage(String page) 
+	{
+		this.page = page;
 	}
 	
 	public String validate()
@@ -67,7 +77,7 @@ public class UserBean extends AbstractBean implements Serializable
 			{		
 				this.userType = user.getUserType();
 				this.id = user.getId();
-				return "dash";				
+				return page;				
 			}
 			else
 			{
