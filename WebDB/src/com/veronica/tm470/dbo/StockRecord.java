@@ -6,6 +6,7 @@ import java.util.Random;
 public class StockRecord 
 {
 	private int id;
+	private int ageRating;
 	private Category category;
 	private String name;
 	private String barcode;
@@ -145,13 +146,22 @@ public class StockRecord
 
 	public void setBarcode() 
 	{
-		this.barcode = barcode.format("%012d", id);
-		System.out.println(barcode);
+		this.barcode = String.format("%012d", id);
 	}
 
 	public void setSearchTerms(String searchTerms) 
 	{
 		this.searchTerms = searchTerms;
+	}
+
+	public int getAgeRating()
+	{
+		return ageRating;
+	}
+
+	public void setAgeRating(int ageRating)
+	{
+		this.ageRating = ageRating;
 	}
 	
 	

@@ -31,8 +31,9 @@ public class StockDAO extends AbstractDAO
 					+ "REC_KEYWORDS,"
 					+ "REC_REQ_SERIAL,"
 					+ "REC_REQ_TEST,"
-					+ "REC_SEARCHTERMS) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					+ "REC_SEARCHTERMS,"
+					+ "REC_AGE_RATING) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			statement.setString(1, stockRecord.getName());
 			statement.setInt(2, stockRecord.getCategory().getId());
 			statement.setDouble(3, stockRecord.getSellPrice());
@@ -43,6 +44,7 @@ public class StockDAO extends AbstractDAO
 			statement.setInt(8, stockRecord.isRequiresSerial() ? 1 : 0 );
 			statement.setInt(9, stockRecord.isRequiresTest() ? 1 : 0 );
 			statement.setString(10, stockRecord.getSearchTerms());
+			statement.setInt(11, stockRecord.getAgeRating());
 			statement.executeUpdate();
 		}
 		catch(SQLException e) 
@@ -115,7 +117,8 @@ public class StockDAO extends AbstractDAO
 				stockRecord.setNotes(rs.getString("REC_NOTE"));
 				stockRecord.setKeywords(rs.getString("REC_KEYWORDS"));
 				stockRecord.setRequiresSerial(rs.getBoolean("REC_REQ_SERIAL"));
-				stockRecord.setRequiresTest(rs.getBoolean("REC_REQ_TEST"));					
+				stockRecord.setRequiresTest(rs.getBoolean("REC_REQ_TEST"));
+				stockRecord.setAgeRating(rs.getInt("REC_AGE_RATING"));
 				stockRecord.setBarcode();
 				stockRecord.setSearchTerms();
 				stockRecords.add(stockRecord); 
@@ -227,7 +230,7 @@ public class StockDAO extends AbstractDAO
 			catch(Exception sqlxstate)
 			{
 				sqlxstate.printStackTrace();
-				System.out.println("There was an error closing the statement.");
+				System.out.println("There was an error closing the statement.");	
 			}			
 		}
 	}
@@ -240,7 +243,7 @@ public class StockDAO extends AbstractDAO
 		try 
 		{
 			connection = getConnection();
-			statement = connection.prepareStatement("UPDATE tbl_record SET "
+			String sql = "UPDATE tbl_record SET "
 					+ "REC_NAME = ?, "
 					+ "REC_CATEGORY_ID = ?, "
 					+ "REC_SELL = ?, "
@@ -250,19 +253,23 @@ public class StockDAO extends AbstractDAO
 					+ "REC_KEYWORDS = ?,"
 					+ "REC_REQ_SERIAL = ?, "
 					+ "REC_REQ_TEST = ?, "
-					+ "REC_SEARCHTERMS = ?, "					
-					+ " WHERE REC_ID = ? ");
-			statement.setString(1, stockRecord.getName());
-			statement.setInt(2, stockRecord.getCategory().getId());
-			statement.setDouble(3, stockRecord.getSellPrice());
-			statement.setDouble(4, stockRecord.getCashBuyPrice());
-			statement.setDouble(5, stockRecord.getExchangePrice());
-			statement.setString(6, stockRecord.getNotes());
-			statement.setString(7, stockRecord.getKeywords());
-			statement.setInt(8, stockRecord.isRequiresSerial() ? 1 : 0 );
-			statement.setInt(9, stockRecord.isRequiresTest() ? 1 : 0 );
-			statement.setString(10, stockRecord.getSearchTerms());
-			statement.setInt(11,stockRecord.getId());
+					+ "REC_SEARCHTERMS = ?, "
+					+ "REC_AGE_RATING = ?"					
+					+ " WHERE REC_ID = ? ";
+			statement = connection.prepareStatement(sql);
+			int parameterCount = 1;
+			statement.setString(parameterCount++, stockRecord.getName());
+			statement.setInt(parameterCount++, stockRecord.getCategory().getId());
+			statement.setDouble(parameterCount++, stockRecord.getSellPrice());
+			statement.setDouble(parameterCount++, stockRecord.getCashBuyPrice());
+			statement.setDouble(parameterCount++, stockRecord.getExchangePrice());
+			statement.setString(parameterCount++, stockRecord.getNotes());
+			statement.setString(parameterCount++, stockRecord.getKeywords());
+			statement.setInt(parameterCount++, stockRecord.isRequiresSerial() ? 1 : 0 );
+			statement.setInt(parameterCount++, stockRecord.isRequiresTest() ? 1 : 0 );
+			statement.setString(parameterCount++, stockRecord.getSearchTerms());
+			statement.setInt(parameterCount++, stockRecord.getAgeRating());
+			statement.setInt(parameterCount++,stockRecord.getId());
 			statement.executeUpdate();
 		}
 		catch(SQLException e) 

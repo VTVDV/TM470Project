@@ -34,6 +34,8 @@ public class StockRecordBean extends AbstractBean implements Serializable
 	private boolean requiresSerial;
 	private boolean requiresTest;
 	
+	private int ageRating;
+	
 	//search = What the user is searching for.
 	private String search;
 	private StockRecord selectedRecord;
@@ -56,6 +58,7 @@ public class StockRecordBean extends AbstractBean implements Serializable
 			stockRecord.setKeywords(keywords);
 			stockRecord.setRequiresSerial(requiresSerial);
 			stockRecord.setRequiresTest(requiresTest);
+			stockRecord.setAgeRating(ageRating);
 			stockRecord.setSearchTerms();
 			dao.addStockRecord(stockRecord);
 			return "stockManagement";
@@ -100,6 +103,7 @@ public class StockRecordBean extends AbstractBean implements Serializable
 			getCategoryObject();
 			StockRecord stockRecord = new StockRecord();
 			stockRecord.setName(name);
+			stockRecord.setId(id);
 			stockRecord.setCategory(category);
 			stockRecord.setSellPrice(sellPrice);
 			stockRecord.setCashBuyPrice(cashBuyPrice);
@@ -109,6 +113,7 @@ public class StockRecordBean extends AbstractBean implements Serializable
 			stockRecord.setRequiresSerial(requiresSerial);
 			stockRecord.setRequiresTest(requiresTest);
 			stockRecord.setSearchTerms();
+			stockRecord.setAgeRating(ageRating);
 			dao.modifyStockRecord(stockRecord);
 			stockRecords = null;
 		}
@@ -307,6 +312,18 @@ public class StockRecordBean extends AbstractBean implements Serializable
 	{
 		this.search = search;
 	}
+
+	public int getAgeRating() 
+	{
+		return ageRating;
+	}
+
+	public void setAgeRating(int ageRating) 
+	{
+		this.ageRating = ageRating;
+	}
+	
+	
 	
 	
 }

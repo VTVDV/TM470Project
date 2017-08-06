@@ -44,69 +44,51 @@
 	<div class = "tab-content" id="tabContent">
 		<div id="search" class="tab-pane fade in active">
 		
-		<h:form>
-			<h:inputText id="search" value="#{stockRecordBean.search}"></h:inputText>
-			<p:commandButton icon="ui-icon-search" action="#{stockRecordBean.getStockRecordList}">
-				<f:ajax execute="search" render="results"/>
-			</p:commandButton>
-			<h:outputText id="output" value="#{stockRecordBean.search}" style="display: none" escape="false"/>
+		<h:form id="searchForm">
+			<div class="searchDiv">
+				<h:inputText class="searchItems" id="search" value="#{stockRecordBean.search}"></h:inputText>
+				<p:commandButton class="searchItems" id="searchButton" icon="ui-icon-search" action="#{stockRecordBean.getStockRecordList}">
+					<f:ajax execute="search" onevent="function(data) { onStockResults(data); }" render="results"/>
+				</p:commandButton>
+				<div class="loader searchItems" style="display: none;"></div>
+				<h:outputText class="searchItems" id="output" value="#{stockRecordBean.search}" style="display: none" escape="false"/>
+			</div>
 		</h:form>
 		
 			<div id="searchResults">
 			<h:panelGroup id="results" class="table-responsive">
-				<p:dataTable id="resultsTable" var="stockRecord" value="#{stockRecordBean.stockRecords}">
-					<p:column>
-						<f:facet name="header">
-							Stock Record
-						</f:facet>
+				<p:dataTable id="resultsTable" var="stockRecord" value="#{stockRecordBean.stockRecords}" rows="10" paginator="true" 
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,20">
+					<p:column headerText="Stock Record" sortBy="#{stockRecord.name}">
 						<p id="sr#{stockRecord.id}">#{stockRecord.name}</p>
 						<p id="notes#{stockRecord.id}" style='display: none;'>#{stockRecord.notes}</p>
 						<p id="keys#{stockRecord.id}" style='display: none;'>#{stockRecord.keywords}</p>
 						<p id="serial#{stockRecord.id}" style='display: none;'>#{stockRecord.requiresSerial}</p>
 						<p id="test#{stockRecord.id}" style='display: none;'>#{stockRecord.requiresTest}</p>
+						<p id="age#{stockRecord.id}" style='display: none;'>#{stockRecord.ageRating}</p>
 					</p:column>
-					<p:column>
-						<f:facet name="header">
-							Category
-						</f:facet>
+					<p:column headerText="Category" sortBy="#{stockRecord.category.name}">
 						#{stockRecord.category.name}
 						<p id="cid#{stockRecord.id}" style='display: none;'>#{stockRecord.category.id}</p>
 					</p:column >
-					<p:column>
-						<f:facet name="header">
-							Quantity
-						</f:facet>
+					<p:column headerText="Quantity">						
 						Not yet implemented
 					</p:column>
-					<p:column>
-						<f:facet name="header">
-							Sell Price
-						</f:facet>
+					<p:column headerText="Sell Price" sortBy="#{stockRecord.sellPrice}">
 						<p id="sp#{stockRecord.id}">#{stockRecord.sellPrice}</p>
 					</p:column>
-					<p:column>
-						<f:facet name="header">
-							Cash
-						</f:facet>
+					<p:column headerText="Cash" sortBy="#{stockRecord.cashBuyPrice}">
 						<p id="cash#{stockRecord.id}">#{stockRecord.cashBuyPrice}</p>
 					</p:column>
-					<p:column>
-						<f:facet name="header">
-							Exchange
-						</f:facet>
+					<p:column headerText="Exchange" sortBy="#{stockRecord.exchangePrice}">
 						<p id="exch#{stockRecord.id}">#{stockRecord.exchangePrice}</p>
 					</p:column>	
-					<p:column>
-						<f:facet name="header">
-							Barcode
-						</f:facet>
+					<p:column headerText="Barcode">
     					<p:barcode value="#{stockRecord.barcode}" type="ean13"/>
 					</p:column>
-					<p:column>
-						<f:facet name="header">
-							Action
-						</f:facet>
-						<p:commandButton class="stock-button" oncomplete="onStockClick(#{stockRecord.id})" icon="ui-icon-search"></p:commandButton>
+					<p:column headerText="Action">
+						<p:commandButton class="stockButton" oncomplete="onStockClick(#{stockRecord.id})" icon="ui-icon-search"></p:commandButton>
 					</p:column>			
 				</p:dataTable>
 			</h:panelGroup>
@@ -158,13 +140,21 @@
 					<h:selectBooleanCheckbox id="modSerial" value="#{stockRecordBean.requiresSerial}" /> Serial Number Required
 					<h:selectBooleanCheckbox id="modTest" value="#{stockRecordBean.requiresTest}" /> Test Required
 				</div>
+				<div id="msAge">
+					Age Rating: (Optional)
+					<h:inputText id="modAge" value="#{stockRecordBean.ageRating}"
+						required="false"
+						requiredMessage="#{bundle['cat.name.validation']}">
+					</h:inputText>
+				</div>
 				<div id="msButtons">
 					<h:commandButton value="Modify"
 					action="#{stockRecordBean.modifyRecord}" styleClass="button" />
 					<h:commandButton value="Delete"
 					action="#{stockRecordBean.deleteRecord}" styleClass="button" />
 				</div>
-			</h:form>
+
+				</h:form>
 		</div>
 		
 		<!--STOCK RECORD CREATION-->
@@ -223,6 +213,12 @@
 						<div id="rButton">
 							<h:commandButton value="Create" onclick="return validate()"
 							action="#{stockRecordBean.create}" styleClass="button" />
+						</div>
+						<div id="rAge">
+							Age Rating: (Optional)
+							<h:inputText id="recAge" value="#{stockRecordBean.ageRating}" required="false"
+								requiredMessage="#{bundle['cat.name.validation']}">
+							</h:inputText>
 						</div>
 					</div>
 			</h:form>

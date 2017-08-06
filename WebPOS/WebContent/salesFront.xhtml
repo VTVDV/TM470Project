@@ -7,10 +7,12 @@
 	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
+	<h:outputStylesheet name="webjars/font-awesome/4.4.0/css/font-awesome.css"/>
 	<link href="#{request.contextPath}/css/sales.css" rel="stylesheet"
 		type="text/css" />
 	<title><ui:insert name="title">#{bundle['sales.title']}</ui:insert></title>
 </h:head>
+
 
 <!-- Test if user is logged in. -->
 <c:if test="#{userBean.name eq null}">
@@ -37,21 +39,13 @@
 	<p:layoutUnit position="west" resizable="true" size="150" minSize="100" maxSize="250">
 		<p:fieldset legend="Customer Info" toggleable="true" toggleSpeed="200">
 	        <h:panelGrid columns="1" cellpadding="5">
-       			<p:commandButton value="Select Customer" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
-	        </h:panelGrid>
-    	</p:fieldset>
-    	<!-- QUANTITY - Should appear/disappear when quantity ribbon button pressed. -->
-		<p:fieldset legend="Quantity" toggleable="true" toggleSpeed="200">
-	        <h:panelGrid columns="1" cellpadding="5">
-      			Quantity
-				<h:inputText id="modSell" value="#{stockRecordBean.sellPrice}">
-				</h:inputText>
+       			<p:commandButton value="Select Customer" icon="fa fa-child" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" onclick="PF('customer').show();"/>
 	        </h:panelGrid>
     	</p:fieldset>
     	<p:fieldset legend="Stock Search" toggleable="true" toggleSpeed="200">
 	        <h:panelGrid columns="1" cellpadding="5">
       			Stock Search
-				<h:inputText id="modSell" value="#{stockRecordBean.sellPrice}">
+				<h:inputText id="search" value="#{stockRecordBean.sellPrice}">
 				</h:inputText>
 	        </h:panelGrid>
     	</p:fieldset>
@@ -59,16 +53,16 @@
 	<p:layoutUnit position="east" resizable="true">
 		<p:fieldset legend="Settle" toggleable="true" toggleSpeed="200">
 	        <h:panelGrid columns="1" cellpadding="5">
-       			<p:commandButton value="Cash" styleClass="ui-ribbon-bigbutton"
+       			<p:commandButton value="Cash" icon="fa fa fa-gbp" styleClass="ui-ribbon-bigbutton"
 					style="width:100px" type="button" />
-				<p:commandButton value="Card" styleClass="ui-ribbon-bigbutton"
+				<p:commandButton value="Card" icon="fa fa-credit-card" styleClass="ui-ribbon-bigbutton"
 					style="width:100px" type="button" />
-				<p:commandButton value="Voucher" styleClass="ui-ribbon-bigbutton"
+				<p:commandButton value="Voucher" icon="fa fa-file-text-o" styleClass="ui-ribbon-bigbutton"
 					style="width:100px" type="button" />
 	        </h:panelGrid>
     	</p:fieldset>
 	</p:layoutUnit>
-	<p:layoutUnit position="center">
+	<p:layoutUnit position="center">	
 		<p:dataTable var="transactions" value="">
 		    <p:column headerText="Qty.">
 		        <h:outputText value="" />
@@ -85,64 +79,64 @@
 	        <p:ribbon>
 	        	<p:tab title="Sell">
 	        		<p:ribbonGroup label="">
-						<p:commandButton value="Quantity" icon="ui-icon-calculator" styleClass="ui-ribbon-bigbutton" type="button" />
-						<p:commandButton value="Discount" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Quantity" icon="fa fa-asterisk" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" onclick="PF('quantity').show();"/>
+						<p:commandButton value="Discount" icon="fa fa-tag" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
 					</p:ribbonGroup>
 					<p:ribbonGroup label="">
-						<p:commandButton value="Misc. Item" styleClass="ui-ribbon-bigbutton"
-							style="width:100px" type="button" />
-						<p:commandButton value="Deposit" styleClass="ui-ribbon-bigbutton"
+						<p:commandButton value="Misc. Item" icon="fa fa-plus" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Deposit" icon="fa fa-bookmark-o" styleClass="ui-ribbon-bigbutton"
 							style="width:100px" type="button" />
 					</p:ribbonGroup>
 					<p:ribbonGroup label="">
-						<p:commandButton value="Void Item"
-							styleClass="ui-ribbon-bigbutton ui-state-default  ui-corner-all"
-							style="width:100px" type="button" />
-						<p:commandButton value="Discard Transaction"
-							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Void Item" icon="fa fa-times-circle" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Discard Transaction" icon="fa fa-trash" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
 					</p:ribbonGroup>
 	        	</p:tab>
 	        	<p:tab title="Buy">
 					<p:ribbonGroup label="">
-						<p:commandButton value="Book for Test"
-							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
-						<p:commandButton value="Check Tests"
-							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Book for Test" icon="fa fa-sign-in" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Check Tests" icon="fa fa-sign-out" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
 					</p:ribbonGroup>
 					<p:ribbonGroup label="">
-						<p:commandButton value="Buy In" styleClass="ui-ribbon-bigbutton"
-							style="width:100px" type="button" />
-						<p:commandButton value="Buy Back" styleClass="ui-ribbon-bigbutton"
+						<p:commandButton value="Buy In" icon="fa fa-shopping-cart" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Buy Back" icon="fa fa-calendar" styleClass="ui-ribbon-bigbutton"
 						style="width:100px" type="button" />
 					</p:ribbonGroup>
 				</p:tab>
 				<p:tab title="Refunds">
 					<p:ribbonGroup label="">
-						<p:commandButton value="Book for Waranty Test"
-							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Book for Waranty Test" icon="fa fa-stethoscope" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
 						<!-- TEST IF USER IS ADMIN -->
 						<c:if test="#{userBean.userType eq 1}">
-							<p:commandButton value="Refund" styleClass="ui-ribbon-bigbutton"
-								style="width:100px" type="button" />
+							<p:commandButton value="Refund" icon="fa fa-money" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
 						</c:if>
-						<p:commandButton value="Exchange" styleClass="ui-ribbon-bigbutton"
-							style="width:100px" type="button" />
+						<p:commandButton value="Exchange" icon="fa fa-arrows-h" styleClass="ui-ribbon-bigbutton"	style="width:100px" type="button" />
 					</p:ribbonGroup>
 				</p:tab>
 				<p:tab title="Misc.">
 					<p:ribbonGroup label="">
-						<p:commandButton value="Reprint Receipt"
-							styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Reprint Receipt" icon="fa fa-print" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
 						<!-- TEST IF USER IS ADMIN -->
 						<c:if test="#{userBean.userType eq 1}">
-							<p:commandButton value="Paid Out" styleClass="ui-ribbon-bigbutton"
-								style="width:100px" type="button" />
+							<p:commandButton value="Paid Out" icon="fa fa-eject" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
 						</c:if>
 					</p:ribbonGroup>
 				</p:tab>
 	        </p:ribbon>
 	    </p:layoutUnit>
 	</p:layout>
+	
+<!-- MODALS -->
+<p:dialog header="Customer" widgetVar="customer" modal="true" height="100">
+    <h:outputText value="Customer Information to be filled out here." />
+</p:dialog> 
+<p:dialog header="Quantity" widgetVar="quantity" modal="true" height="100">
+     <h:panelGrid columns="1" cellpadding="5">
+  		Quantity
+		<h:inputText id="quantity" value="#{stockRecordBean.sellPrice}">
+		</h:inputText>
+     </h:panelGrid>    	
+</p:dialog>
 
 </h:body>
 </html>

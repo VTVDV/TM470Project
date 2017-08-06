@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:f = "http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui">
+      
+<h:head>
+	<link href="#{request.contextPath}/css/test.css" rel="stylesheet" type="text/css"/> 
+	<link href="#{request.contextPath}/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="js/stockManagement.js"></script>
+	<script src="js/test.js"></script>
+  <title><ui:insert name="title">#{bundle['stock.title']}</ui:insert></title>
+</h:head>
+
+<!-- Test if user is logged in. -->
+<c:if test="#{userBean.name eq null}">
+	<f:event type="preRenderView" listener="#{userBean.redirect}" />
+	<f:attribute name="page" value="login"/>
+</c:if>
+
+<h:body>
+<div class = "header">
+	<div class = "headerText">
+		<div class = "tileName"><p><span class="glyphicon glyphicon-arrow-left"></span> <a href="dash.xhtml">#{bundle['webpos.return']}</a></p></div>
+	</div>
+</div>
+
+<div class="box">
+	<p:tabView>
+		<p:tab title="Tests">
+			<p:dataTable var="Test" value="">
+			    <p:column headerText="Date">
+			        <h:outputText value="" />
+			    </p:column>		 
+			    <p:column headerText="Time">
+			        <h:outputText value="" />
+			    </p:column>		 
+			    <p:column headerText="Test Number">
+			        <h:outputText value="" />
+			    </p:column>
+			    <p:column headerText="Customer">
+			        <h:outputText value="" />
+			    </p:column>
+			    <p:column headerText="Item">
+			        <h:outputText value="" />
+			    </p:column>
+			    <p:column headerText="SN">
+			        <h:outputText value="" />
+			    </p:column>
+			    <p:column headerText="Status">
+			        <h:outputText value="" />
+			    </p:column>
+			    <p:column headerText="User">
+			        <h:outputText value="" />
+			    </p:column>
+			    <p:column headerText="Tested By">
+			        <h:outputText value="" />
+			    </p:column>
+			    <p:column headerText="Action">
+			        <h:outputText value="" />
+			    </p:column>
+			</p:dataTable>
+		</p:tab>
+		<p:tab title="Test Form">
+		</p:tab>
+	</p:tabView>
+</div>
+
+</h:body>
+</html>	
+

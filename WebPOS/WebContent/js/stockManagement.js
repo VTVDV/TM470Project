@@ -55,6 +55,17 @@ function onStockClick(id)
 	$("#modStock\\:modKeywords").val($("#keys" + id).text());
 	$("#modStock\\:modSerial").prop('checked', $("#serial" + id).text());
 	$("#modStock\\:modTest").prop('checked', $("#test" + id).text());
+	$("#modStock\\:modAge").val($("#age" + id).text());
 	$("#modStock\\:modId").val(id);
 }
 
+$(document).ready(function() 
+{
+	$("#searchForm\\:search").on("keyup", function(e) 
+	{
+		if (e.keyCode == 13) 
+		{
+			$(".loader").show();
+		}
+	});
+});
