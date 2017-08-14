@@ -209,16 +209,16 @@
 						<div id="rBooleans">
 							<h:selectBooleanCheckbox value="#{stockRecordBean.requiresSerial}" /> Serial Number Required
 							<h:selectBooleanCheckbox value="#{stockRecordBean.requiresTest}" /> Test Required
-						</div>
-						<div id="rButton">
-							<h:commandButton value="Create" onclick="return validate()"
-							action="#{stockRecordBean.create}" styleClass="button" />
-						</div>
+						</div>						
 						<div id="rAge">
 							Age Rating: (Optional)
 							<h:inputText id="recAge" value="#{stockRecordBean.ageRating}" required="false"
 								requiredMessage="#{bundle['cat.name.validation']}">
 							</h:inputText>
+						</div>
+						<div id="rButton">
+							<h:commandButton value="Create" onclick="return validate()"
+							action="#{stockRecordBean.create}" styleClass="button" />
 						</div>
 					</div>
 			</h:form>

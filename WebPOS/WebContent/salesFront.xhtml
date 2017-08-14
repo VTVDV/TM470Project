@@ -13,16 +13,16 @@
 	<title><ui:insert name="title">#{bundle['sales.title']}</ui:insert></title>
 </h:head>
 
-
 <!-- Test if user is logged in. -->
 <c:if test="#{userBean.name eq null}">
 	<f:event type="preRenderView" listener="#{userBean.redirect}" />
 	<f:attribute name="page" value="login" />
 </c:if>
 
-<h:body>
-	
+<!-- POPULATE CUSTOMERS -->
+<f:event type="preRenderView" listener="#{customerBean.getCustomers}" />
 
+<h:body>
 	<p:layout fullPage="true">
 		<p:layoutUnit position="north">
 		<div class="header">
@@ -40,6 +40,13 @@
 		<p:fieldset legend="Customer Info" toggleable="true" toggleSpeed="200">
 	        <h:panelGrid columns="1" cellpadding="5">
        			<p:commandButton value="Select Customer" icon="fa fa-child" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" onclick="PF('customer').show();"/>
+	        </h:panelGrid>
+	        <h:panelGrid>
+	        	<h:outputText id="sName" value="#{customerBean.selectedCustomer.fullName}" rendered="#{customerBean.selectedCustomer.fullName != null}"/>
+	        	<h:outputText id="sAddress" value="#{customerBean.selectedCustomer.address.postcode}" rendered="#{customerBean.selectedCustomer.address != null} value=" />
+	        	<h:outputText id="sContact" value="#{customerBean.selectedCustomer.email}" rendered="#{customerBean.selectedCustomer.email != null}" />
+	        	<h:outputText id="sContact" value="#{customerBean.selectedCustomer.mobileNumber}" rendered="#{customerBean.selectedCustomer.mobileNumber != null}" />	        	    	
+	        	<h:outputText id="sContact" value="#{customerBean.selectedCustomer.homeNumber}" rendered="#{customerBean.selectedCustomer.homeNumber != null}" />	        	    	
 	        </h:panelGrid>
     	</p:fieldset>
     	<p:fieldset legend="Stock Search" toggleable="true" toggleSpeed="200">
@@ -121,20 +128,116 @@
 							<p:commandButton value="Paid Out" icon="fa fa-eject" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
 						</c:if>
 					</p:ribbonGroup>
+					<p:ribbonGroup label="">
+						<c:if test="#{userBean.userType eq 1}">
+							<p:commandButton value="Online Sale" icon="fa fa-paper-plane" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						</c:if>
+					</p:ribbonGroup>
 				</p:tab>
 	        </p:ribbon>
 	    </p:layoutUnit>
 	</p:layout>
 	
 <!-- MODALS -->
-<p:dialog header="Customer" widgetVar="customer" modal="true" height="100">
-    <h:outputText value="Customer Information to be filled out here." />
-</p:dialog> 
+<!-- CUSTOMER SELECTOR -->
+<p:dialog header="Customer" widgetVar="customer" modal="true" height="600" width="550">
+	<p:tabView>
+		<p:tab title="Existing Customer">
+			<h:form id="customerSelector">
+				<p:messages id="selectMessage" showDetail="true" autoUpdate="true" closable="true"/>
+				<p:outputLabel value="Last Name: " for="customer"></p:outputLabel>
+				<p:selectOneMenu id="customer" value="#{customerBean.selectedCustomer}" effect="fade" var="c" filter="true" filterMatchMode="startsWith" converter="customerConverter" panelStyle="width:180px">
+					<f:selectItems value="#{customerBean.customerList}" var="customer" itemLabel="#{customer.lastName}" itemValue="#{customer}"/>
+					<p:column>
+						<h:outputText value="#{c.lastName}" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{c.firstNames}" />
+					</p:column>
+				</p:selectOneMenu>
+				<div id="buttons">
+					<p:commandButton value="Select User" action="#{customerBean.validateCustomer}" process="@form"></p:commandButton>
+				</div>
+				<h:messages> </h:messages>
+			</h:form>	
+		</p:tab>
+		
+		<p:tab title="New Customer">
+			<h:form id="newCustomer">
+				<div id="newFirstNames">
+					First Names:				
+					<p:inputText id="ncFirstNames" value="#{customerBean.firstNames}" />
+				</div>
+				<div id="newLastName">
+					Last Names:
+					<p:inputText id="ncLastName" value="#{customerBean.lastName}" />
+				</div>	
+				<hr></hr>
+				<div id="newHouseNmber">
+					House Number:
+					<p:inputText id="ncHouseNumber" value="#{customerBean.houseNumber}" />
+				</div>
+				<div id="newBuilding">
+					Building (Optional):
+					<h:inputText id="ncBuildingName" value="#{customerBean.buildingName}" />
+				</div>
+				<div id="newStreet">
+					Street Name:
+					<h:inputText id="ncStreetName" value="#{customerBean.streetName}" />
+				</div>
+				<div id="city">
+					City:
+					<h:inputText id="ncCity" value="#{customerBean.city}" />
+				</div>
+				<div id="newcounty">
+					County:
+					<h:inputText id="ncCounty" value="#{customerBean.county}" />
+				</div>
+				<div id="newPostcode">
+					Postcode:
+					<h:inputText id="ncPostcode" value="#{customerBean.postcode}" />
+				</div>
+				<hr></hr>
+				<div id="newMobileNumber">
+					Mobile Phone Number:
+					<h:inputText id="ncMobileNumber" value="#{customerBean.mobileNumber}"/>
+				</div>
+				<div id="newHomeNumber">
+					Home Phone Number:
+					<h:inputText id="ncHomeNumber" value="#{customerBean.homeNumber}" />
+				</div>
+				<div id="newEmail">
+					Email:
+					<h:inputText id="ncEmail" value="#{customerBean.email}" />
+				</div>
+				<hr></hr>
+				<div id="newDOB">
+					Date of Birth:
+					 <p:calendar id="button" value="#{customerBean.dateOfBirth}" showOn="button"/>
+				</div>
+				<div id="newID">
+					ID Type:
+					<h:inputText id="ncIDType" value="#{customerBean.idType}" />
+				</div>
+				<div id="newIDNumber">
+					ID Number:
+					<h:inputText id="ncIDNumber" value="#{customerBean.idNumber}" />
+				</div>
+				<div id ="newBooleans">
+					Member of Staff:
+					<h:selectBooleanCheckbox value="#{customerBean.staff}" />
+				</div>
+				<p:commandButton value="Create and Select User" id="button1" process="@form" action="#{customerBean.createCustomer}" onevent="function(data) { resetFormVal(data); })"></p:commandButton>
+			</h:form>
+		</p:tab>
+	</p:tabView>    
+</p:dialog>
+
+<!-- QUANTITY -->
 <p:dialog header="Quantity" widgetVar="quantity" modal="true" height="100">
      <h:panelGrid columns="1" cellpadding="5">
   		Quantity
-		<h:inputText id="quantity" value="#{stockRecordBean.sellPrice}">
-		</h:inputText>
+		<h:inputText id="quantity" value="#{stockRecordBean.sellPrice}"/>
      </h:panelGrid>    	
 </p:dialog>
 

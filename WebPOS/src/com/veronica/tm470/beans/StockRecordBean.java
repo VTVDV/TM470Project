@@ -301,6 +301,7 @@ public class StockRecordBean extends AbstractBean implements Serializable
 		keywords = null;
 		requiresSerial = false;
 		requiresTest = false;
+		stockRecords = null;
 	}
 
 	public String getSearch() 
