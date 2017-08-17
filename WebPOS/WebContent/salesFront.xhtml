@@ -21,6 +21,7 @@
 
 <!-- POPULATE CUSTOMERS -->
 <f:event type="preRenderView" listener="#{customerBean.getCustomers}" />
+<f:event type="preRenderView" listener="#{salesBean.getAllStockRecords}" />
 
 <h:body>
 	<p:layout fullPage="true">
@@ -36,24 +37,22 @@
 		</div>
 	</div>
 	</p:layoutUnit>
-	<p:layoutUnit position="west" resizable="true" size="150" minSize="100" maxSize="250">
+	<p:layoutUnit position="west" resizable="true" size="250" minSize="100" maxSize="250">
 		<p:fieldset legend="Customer Info" toggleable="true" toggleSpeed="200">
 	        <h:panelGrid columns="1" cellpadding="5">
-       			<p:commandButton value="Select Customer" icon="fa fa-child" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" onclick="PF('customer').show();"/>
+       			<p:commandButton id="customerButton" value="Select Customer" icon="fa fa-child" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" onclick="PF('customer').show();" disabled="#{salesBean.transaction != null}"/>
 	        </h:panelGrid>
-	        <h:panelGrid>
+	        <h:panelGrid id="customerDetails">
 	        	<h:outputText id="sName" value="#{customerBean.selectedCustomer.fullName}" rendered="#{customerBean.selectedCustomer.fullName != null}"/>
-	        	<h:outputText id="sAddress" value="#{customerBean.selectedCustomer.address.postcode}" rendered="#{customerBean.selectedCustomer.address != null} value=" />
+	        	<h:outputText id="sHouse" value="#{customerBean.selectedCustomer.address.houseNumber}" rendered="#{customerBean.selectedCustomer.address.houseNumber != null}"/>
+	        	<h:outputText id="sBuilding" value="#{customerBean.selectedCustomer.address.buildingName}" rendered="#{customerBean.selectedCustomer.address.buildingName != null}"/>
+	        	<h:outputText id="sStreet" value="#{customerBean.selectedCustomer.address.streetName}" rendered="#{customerBean.selectedCustomer.address.streetName != null}"/>
+	        	<h:outputText id="sCity" value="#{customerBean.selectedCustomer.address.city}" rendered="#{customerBean.selectedCustomer.address.city != null}"/>
+	        	<h:outputText id="sCounty" value="#{customerBean.selectedCustomer.address.county}" rendered="#{customerBean.selectedCustomer.address.county != null}"/>
+	        	<h:outputText id="sPostode" value="#{customerBean.selectedCustomer.address.postcode}" rendered="#{customerBean.selectedCustomer.address != null}" />
 	        	<h:outputText id="sContact" value="#{customerBean.selectedCustomer.email}" rendered="#{customerBean.selectedCustomer.email != null}" />
-	        	<h:outputText id="sContact" value="#{customerBean.selectedCustomer.mobileNumber}" rendered="#{customerBean.selectedCustomer.mobileNumber != null}" />	        	    	
-	        	<h:outputText id="sContact" value="#{customerBean.selectedCustomer.homeNumber}" rendered="#{customerBean.selectedCustomer.homeNumber != null}" />	        	    	
-	        </h:panelGrid>
-    	</p:fieldset>
-    	<p:fieldset legend="Stock Search" toggleable="true" toggleSpeed="200">
-	        <h:panelGrid columns="1" cellpadding="5">
-      			Stock Search
-				<h:inputText id="search" value="#{stockRecordBean.sellPrice}">
-				</h:inputText>
+	        	<h:outputText id="sMobile" value="#{customerBean.selectedCustomer.mobileNumber}" rendered="#{customerBean.selectedCustomer.mobileNumber != null}" />	        	    	
+	        	<h:outputText id="sHome" value="#{customerBean.selectedCustomer.homeNumber}" rendered="#{customerBean.selectedCustomer.homeNumber != null}" />	        	    	
 	        </h:panelGrid>
     	</p:fieldset>
 	</p:layoutUnit>
@@ -69,8 +68,30 @@
 	        </h:panelGrid>
     	</p:fieldset>
 	</p:layoutUnit>
-	<p:layoutUnit position="center">	
-		<p:dataTable var="transactions" value="">
+	<!-- Stock Search and transaction list -->
+	<p:layoutUnit position="center">
+		<h:form id="stockSelector">
+			<p:messages for="stockMessage" showDetail="true" autoUpdate="true" closable="true"/>			
+			<p:selectOneMenu id="stock" value="#{salesBean.selectedRecord}" effect="fade" var="s" filter="true" filterMatchMode="startsWith" converter="stockRecordConverter" panelStyle="width:800px">
+				<f:selectItems value="#{salesBean.stockRecords}" var="stockRecord" itemLabel="#{stockRecord.name}" itemValue="#{stockRecord}"/>
+				<p:column>
+					<h:outputText value="#{s.name}" />
+				</p:column>
+				<p:column>
+					<h:outputText value="#{s.sellPrice}"/>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{s.cashBuyPrice}" />
+				</p:column>
+				<p:column>
+					<h:outputText value="#{s.exchangePrice}" />
+				</p:column>
+			</p:selectOneMenu>
+			<p:commandButton value="Sell" id="sell" process="@form"></p:commandButton>
+			<p:commandButton value="Buy" id="buy" process="@form" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}" action="#{salesBean.buyStockItem}" update=""></p:commandButton>
+			<p:commandButton value="Exhange" id="exchange" process="@form" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}"></p:commandButton>
+		</h:form>			
+		<p:dataTable id="transactionTable" var="transactions" value="" rendered="#{salesBean.transaction != null}">
 		    <p:column headerText="Qty.">
 		        <h:outputText value="" />
 		    </p:column>		 
@@ -95,8 +116,10 @@
 							style="width:100px" type="button" />
 					</p:ribbonGroup>
 					<p:ribbonGroup label="">
-						<p:commandButton value="Void Item" icon="fa fa-times-circle" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
-						<p:commandButton value="Discard Transaction" icon="fa fa-trash" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<h:form>
+							<p:commandButton value="Void Item" icon="fa fa-times-circle" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+							<p:commandButton value="Discard Transaction" icon="fa fa-trash" styleClass="ui-ribbon-bigbutton" style="width:100px" process="@form" action="#{salesBean.discardTransaction}" update="customerButton customerDetails stockSelector:buy stockSelector:exchange transactionTable"/>
+						</h:form>
 					</p:ribbonGroup>
 	        	</p:tab>
 	        	<p:tab title="Buy">
@@ -140,11 +163,11 @@
 	
 <!-- MODALS -->
 <!-- CUSTOMER SELECTOR -->
-<p:dialog header="Customer" widgetVar="customer" modal="true" height="600" width="550">
+<p:dialog header="Customer" widgetVar="customer" modal="true" height="600" width="650">
 	<p:tabView>
 		<p:tab title="Existing Customer">
 			<h:form id="customerSelector">
-				<p:messages id="selectMessage" showDetail="true" autoUpdate="true" closable="true"/>
+				<p:messages for="selectMessage" showDetail="true" autoUpdate="true" closable="true"/>
 				<p:outputLabel value="Last Name: " for="customer"></p:outputLabel>
 				<p:selectOneMenu id="customer" value="#{customerBean.selectedCustomer}" effect="fade" var="c" filter="true" filterMatchMode="startsWith" converter="customerConverter" panelStyle="width:180px">
 					<f:selectItems value="#{customerBean.customerList}" var="customer" itemLabel="#{customer.lastName}" itemValue="#{customer}"/>
@@ -156,7 +179,7 @@
 					</p:column>
 				</p:selectOneMenu>
 				<div id="buttons">
-					<p:commandButton value="Select User" action="#{customerBean.validateCustomer}" process="@form"></p:commandButton>
+					<p:commandButton value="Select User" action="#{customerBean.validateCustomer}" process="@form" update="customerDetails stockSelector:buy stockSelector:exchange"></p:commandButton>
 				</div>
 				<h:messages> </h:messages>
 			</h:form>	
@@ -164,70 +187,26 @@
 		
 		<p:tab title="New Customer">
 			<h:form id="newCustomer">
-				<div id="newFirstNames">
-					First Names:				
-					<p:inputText id="ncFirstNames" value="#{customerBean.firstNames}" />
+				<ui:include src="/customerForm.xhtml" />
+				<p:commandButton value="Create and Select User" id="button1" 
+					 action="#{customerBean.createCustomer}" process="@form">			
+				</p:commandButton>
+			</h:form>
+		</p:tab>
+		<p:tab title="Modify Customer">
+			<h:form>
+				<ui:include src="/customerForm.xhtml" />
+				<div id ="modBooleans">
+					Banned:
+					<h:selectBooleanCheckbox value="#{customerBean.banned}" />
 				</div>
-				<div id="newLastName">
-					Last Names:
-					<p:inputText id="ncLastName" value="#{customerBean.lastName}" />
-				</div>	
-				<hr></hr>
-				<div id="newHouseNmber">
-					House Number:
-					<p:inputText id="ncHouseNumber" value="#{customerBean.houseNumber}" />
+				<div id="modNotes">
+					Notes:
+					<h:inputTextarea value="#{customerBean.note}" />
 				</div>
-				<div id="newBuilding">
-					Building (Optional):
-					<h:inputText id="ncBuildingName" value="#{customerBean.buildingName}" />
-				</div>
-				<div id="newStreet">
-					Street Name:
-					<h:inputText id="ncStreetName" value="#{customerBean.streetName}" />
-				</div>
-				<div id="city">
-					City:
-					<h:inputText id="ncCity" value="#{customerBean.city}" />
-				</div>
-				<div id="newcounty">
-					County:
-					<h:inputText id="ncCounty" value="#{customerBean.county}" />
-				</div>
-				<div id="newPostcode">
-					Postcode:
-					<h:inputText id="ncPostcode" value="#{customerBean.postcode}" />
-				</div>
-				<hr></hr>
-				<div id="newMobileNumber">
-					Mobile Phone Number:
-					<h:inputText id="ncMobileNumber" value="#{customerBean.mobileNumber}"/>
-				</div>
-				<div id="newHomeNumber">
-					Home Phone Number:
-					<h:inputText id="ncHomeNumber" value="#{customerBean.homeNumber}" />
-				</div>
-				<div id="newEmail">
-					Email:
-					<h:inputText id="ncEmail" value="#{customerBean.email}" />
-				</div>
-				<hr></hr>
-				<div id="newDOB">
-					Date of Birth:
-					 <p:calendar id="button" value="#{customerBean.dateOfBirth}" showOn="button"/>
-				</div>
-				<div id="newID">
-					ID Type:
-					<h:inputText id="ncIDType" value="#{customerBean.idType}" />
-				</div>
-				<div id="newIDNumber">
-					ID Number:
-					<h:inputText id="ncIDNumber" value="#{customerBean.idNumber}" />
-				</div>
-				<div id ="newBooleans">
-					Member of Staff:
-					<h:selectBooleanCheckbox value="#{customerBean.staff}" />
-				</div>
-				<p:commandButton value="Create and Select User" id="button1" process="@form" action="#{customerBean.createCustomer}" onevent="function(data) { resetFormVal(data); })"></p:commandButton>
+				<p:commandButton value="Create and Select User" id="button1" 
+								process="@form">
+				</p:commandButton>
 			</h:form>
 		</p:tab>
 	</p:tabView>    
@@ -239,6 +218,14 @@
   		Quantity
 		<h:inputText id="quantity" value="#{stockRecordBean.sellPrice}"/>
      </h:panelGrid>    	
+</p:dialog>
+
+<!-- SERIAL NUMBER -->
+<p:dialog header="Serial Number" widgetVar="serialNumber" modal="true">
+	<h:panelGrid columns="1">
+		Please Enter Serial Number
+		<h:inputText id="serial" value="#{salesBean.serialNumber}"></h:inputText>
+	</h:panelGrid>
 </p:dialog>
 
 </h:body>

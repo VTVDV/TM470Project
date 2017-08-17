@@ -16,7 +16,7 @@ import com.veronica.tm470.db.CustomerDAO;
 import com.veronica.tm470.dbo.Address;
 import com.veronica.tm470.dbo.Customer;
 
-@ManagedBean (name = "customerBean", eager = true)
+@ManagedBean (name = "customerBean")
 @SessionScoped
 public class CustomerBean extends AbstractBean implements Serializable
 {
@@ -106,11 +106,11 @@ public class CustomerBean extends AbstractBean implements Serializable
 	{
 		if(selectedCustomer.isBanned())
 		{
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Selected customer is banned!"));
+			FacesContext.getCurrentInstance().addMessage("selectMessage", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Selected customer is banned!"));
 		}
 		if(!StringUtils.isEmpty(selectedCustomer.getNote()))
 		{
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Note:", selectedCustomer.getNote()));
+			FacesContext.getCurrentInstance().addMessage("selectMessage", new FacesMessage(FacesMessage.SEVERITY_WARN, "Note:", selectedCustomer.getNote()));
 		}
 			
 		return null;

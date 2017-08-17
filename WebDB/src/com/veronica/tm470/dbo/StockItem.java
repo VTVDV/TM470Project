@@ -7,14 +7,6 @@ public class StockItem
 	private String name;
 	private String serial;
 	
-	public StockRecord getStockRecord() {
-		return stockRecord;
-	}
-
-	public void setStockRecord(StockRecord stockRecord) {
-		this.stockRecord = stockRecord;
-	}
-
 	private double sold;
 	private double boughtCash;
 	private double boughtExchange;
@@ -23,7 +15,26 @@ public class StockItem
 	private boolean isFaulty;
 	
 	private String faultDetails;	
+	
+	public StockItem()
+	{
+		
+	}
+	
+	public StockItem(StockRecord stockRecord)
+	{
+		this.stockRecord = stockRecord;
+		this.name = stockRecord.getName();
+	}
 
+	public StockRecord getStockRecord() {
+		return stockRecord;
+	}
+
+	public void setStockRecord(StockRecord stockRecord) {
+		this.stockRecord = stockRecord;
+	}
+	
 	public int getID() 
 	{
 		return ID;

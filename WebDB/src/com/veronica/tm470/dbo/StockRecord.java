@@ -164,6 +164,13 @@ public class StockRecord
 		this.ageRating = ageRating;
 	}
 	
-	
-
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(this.id == ((StockRecord) obj).getId())
+		{
+				return true;
+		}
+		return false;
+	}
 }

@@ -1,0 +1,71 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+		<div id="newFirstNames">
+			First Names:				
+			<p:inputText id="ncFirstNames" value="#{customerBean.firstNames}" />
+		</div>
+		<div id="newLastName">
+			Last Names:
+			<p:inputText id="ncLastName" value="#{customerBean.lastName}" />
+		</div>	
+		<hr></hr>
+		<div id="newHouseNmber">
+			House Number:
+			<p:inputText id="ncHouseNumber" value="#{customerBean.houseNumber}" />
+		</div>
+		<div id="newBuilding">
+			Building (Optional):
+			<h:inputText id="ncBuildingName" value="#{customerBean.buildingName}" />
+		</div>
+		<div id="newStreet">
+			Street Name:
+			<h:inputText id="ncStreetName" value="#{customerBean.streetName}" />
+		</div>
+		<div id="city">
+			City:
+			<h:inputText id="ncCity" value="#{customerBean.city}" />
+		</div>
+		<div id="newcounty">
+			County:
+			<h:inputText id="ncCounty" value="#{customerBean.county}" />
+		</div>
+		<div id="newPostcode">
+			Postcode:
+			<h:inputText id="ncPostcode" value="#{customerBean.postcode}" />
+		</div>
+		<hr></hr>
+		<div id="newMobileNumber">
+			Mobile Phone Number:
+			<h:inputText id="ncMobileNumber" value="#{customerBean.mobileNumber}"/>
+		</div>
+		<div id="newHomeNumber">
+			Home Phone Number:
+			<h:inputText id="ncHomeNumber" value="#{customerBean.homeNumber}" />
+		</div>
+		<div id="newEmail">
+			Email:
+			<h:inputText id="ncEmail" value="#{customerBean.email}" />
+		</div>
+		<hr></hr>
+		<div id="newDOB">
+			Date of Birth:
+			 <p:calendar id="button" value="#{customerBean.dateOfBirth}" showOn="button"/>
+		</div>
+		<div id="newID">
+			ID Type:
+			<h:inputText id="ncIDType" value="#{customerBean.idType}" />
+		</div>
+		<div id="newIDNumber">
+			ID Number:
+			<h:inputText id="ncIDNumber" value="#{customerBean.idNumber}" />
+		</div>
+		<div id ="newBooleans">
+			Member of Staff:
+			<h:selectBooleanCheckbox value="#{customerBean.staff}" />
+		</div>
+</ui:composition>

@@ -165,7 +165,6 @@ public class Customer implements Serializable
 	@Override
 	public boolean equals(Object obj)
 	{
-		// TODO Auto-generated method stub
 		if(this.id == ((Customer) obj).getId())
 		{
 			return true;

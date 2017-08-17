@@ -15,7 +15,6 @@ public class CustomerConverter implements Converter
 	{
 		if(value != null && value.trim().length() > 0)
 		{
-			System.out.println(value);
 			CustomerDAO dao = new CustomerDAO();
 			Customer customer = new Customer();
 			try 
