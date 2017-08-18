@@ -7,11 +7,13 @@ public class StockItem
 	private String name;
 	private String serial;
 	
-	private double sold;
-	private double boughtCash;
-	private double boughtExchange;
+	private double sellPrice;
+	private double cashPrice;
+	private double exchangePrice;
 	
-	private boolean hasSold;
+	private double boughtValue;
+	
+	private TransactionType transactionType;
 	private boolean isFaulty;
 	
 	private String faultDetails;	
@@ -25,6 +27,9 @@ public class StockItem
 	{
 		this.stockRecord = stockRecord;
 		this.name = stockRecord.getName();
+		this.sellPrice = stockRecord.getSellPrice();
+		this.cashPrice = stockRecord.getCashBuyPrice();
+		this.exchangePrice = stockRecord.getExchangePrice();
 	}
 
 	public StockRecord getStockRecord() {
@@ -64,45 +69,29 @@ public class StockItem
 	{
 		this.serial = serial;
 	}
-
-	public double getSold() 
-	{
-		return sold;
+	
+	public double getSellPrice() {
+		return sellPrice;
 	}
 
-	public void setSold(double sold) 
-	{
-		this.sold = sold;
+	public void setSellPrice(double sellPrice) {
+		this.sellPrice = sellPrice;
 	}
 
-	public double getBoughtCash() 
-	{
-		return boughtCash;
+	public double getCashPrice() {
+		return cashPrice;
 	}
 
-	public void setBoughtCash(double boughtCash) 
-	{
-		this.boughtCash = boughtCash;
+	public void setCashPrice(double cashPrice) {
+		this.cashPrice = cashPrice;
 	}
 
-	public double getBoughtExchange() 
-	{
-		return boughtExchange;
+	public double getExchangePrice() {
+		return exchangePrice;
 	}
 
-	public void setBoughtExchange(double boughtExchange) 
-	{
-		this.boughtExchange = boughtExchange;
-	}
-
-	public boolean hasSold() 
-	{
-		return hasSold;
-	}
-
-	public void setHasSold(boolean hasSold) 
-	{
-		this.hasSold = hasSold;
+	public void setExchangePrice(double exchangePrice) {
+		this.exchangePrice = exchangePrice;
 	}
 
 	public boolean isFaulty() 
@@ -123,6 +112,38 @@ public class StockItem
 	public void setFaultDetails(String faultDetails) 
 	{
 		this.faultDetails = faultDetails;
+	}
+
+	public TransactionType getTransactionType() {
+		return transactionType;
+	}
+
+	public void setTransactionType(TransactionType transactionType) {
+		this.transactionType = transactionType;
+	}
+	
+	public double generateBoughtValue()
+	{
+		if(transactionType.equals(TransactionType.CASH))
+		{
+			return cashPrice;
+		}
+		else if(transactionType.equals(TransactionType.EXCHANGE))
+		{
+			return exchangePrice;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	public double getBoughtValue() {
+		return boughtValue;
+	}
+
+	public void setBoughtValue(double boughtValue) {
+		this.boughtValue = boughtValue;
 	}
 	
 	

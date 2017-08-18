@@ -16,6 +16,7 @@ import com.veronica.tm470.dbo.Customer;
 import com.veronica.tm470.dbo.StockItem;
 import com.veronica.tm470.dbo.StockRecord;
 import com.veronica.tm470.dbo.Transaction;
+import com.veronica.tm470.dbo.TransactionType;
 
 @ManagedBean
 @SessionScoped
@@ -25,6 +26,9 @@ public class SalesBean extends AbstractBean
 	private StockRecord selectedRecord;
 	private Transaction transaction;
 	private String serialNumber;
+	
+	private StockItem selectedStockItem;
+	private double discount;
 	
 	@ManagedProperty(value="#{customerBean}")
 	private CustomerBean customerBean;
@@ -45,6 +49,8 @@ public class SalesBean extends AbstractBean
 		}
 		return null;
 	}
+	
+	
 	
 	public List<StockRecord> getStockRecords() {
 		return stockRecords;
@@ -89,8 +95,9 @@ public class SalesBean extends AbstractBean
 		else
 		{
 			StockItem stockItem = new StockItem(selectedRecord);
-			stockItem.setBoughtCash(selectedRecord.getCashBuyPrice());
-			transaction.getItemsBought().add(stockItem);
+			stockItem.setTransactionType(TransactionType.CASH);
+			stockItem.generateBoughtValue();
+			transaction.getItems().add(stockItem);
 			transaction.setCustomer(customerBean.getSelectedCustomer());
 		}
 		return null;
@@ -141,6 +148,25 @@ public class SalesBean extends AbstractBean
 	{
  		this.transaction = null;
 		customerBean.setSelectedCustomer(null);
+		return null;
+	}
+	
+	public String setPrice()
+	{
+		selectedStockItem.setSellPrice(discount);
+		return null;
+	}
+	
+	public String discountPrice()
+	{
+		double percentageDiscount =  selectedStockItem.getSellPrice()*((100-discount)/100);
+		selectedStockItem.setSellPrice(percentageDiscount);
+		return null;
+	}
+	
+	public String deductDiscount()
+	{
+		selectedStockItem.setSellPrice(selectedStockItem.getSellPrice()-discount);
 		return null;
 	}
 

@@ -88,18 +88,17 @@
 				</p:column>
 			</p:selectOneMenu>
 			<p:commandButton value="Sell" id="sell" process="@form"></p:commandButton>
-			<p:commandButton value="Buy" id="buy" process="@form" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}" action="#{salesBean.buyStockItem}" update=""></p:commandButton>
+			<p:commandButton value="Buy" id="buy" process="@form" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}" action="#{salesBean.buyStockItem}" update="transactionTable"></p:commandButton>
 			<p:commandButton value="Exhange" id="exchange" process="@form" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}"></p:commandButton>
 		</h:form>			
-		<p:dataTable id="transactionTable" var="transactions" value="" rendered="#{salesBean.transaction != null}">
-		    <p:column headerText="Qty.">
-		        <h:outputText value="" />
-		    </p:column>		 
+		<p:dataTable id="transactionTable" var="stockItem" value="#{salesBean.transaction.items}" rendered="#{salesBean.transaction != null}">	 
+		    <p:column headerText="Type">
+		    	<h:outputText value="#{stockItem.transactionType.name}" />
+		    </p:column>
 		    <p:column headerText="Name">
-		        <h:outputText value="" />
+		        <h:outputText value="#{stockItem.name}" />
 		    </p:column>		 
 		    <p:column headerText="Value">
-		        <h:outputText value="" />
 		    </p:column>
 		</p:dataTable>
 	</p:layoutUnit>

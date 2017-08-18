@@ -12,17 +12,13 @@ public class Transaction
 	//User who processed transaction.
 	private User user;
 	private Customer customer;
-	private List<StockItem> itemsSold;
-	private List<StockItem> itemsBought;
-	private List<StockItem> itemsExchanged;
+	private List<StockItem> items;
 	private double total;
 	private String paymentMethod;
 	
 	public Transaction()
 	{
-		itemsSold = new ArrayList<>();
-		itemsBought = new ArrayList<>();
-		itemsExchanged = new ArrayList<>();
+		items = new ArrayList<>();
 	}
 	
 	public int getId()
@@ -65,30 +61,7 @@ public class Transaction
 	{
 		this.customer = customer;
 	}
-	public List<StockItem> getItemsSold()
-	{
-		return itemsSold;
-	}
-	public void setItemsSold(List<StockItem> itemsSold)
-	{
-		this.itemsSold = itemsSold;
-	}
-	public List<StockItem> getItemsBought()
-	{
-		return itemsBought;
-	}
-	public void setItemsBought(List<StockItem> itemsBought)
-	{
-		this.itemsBought = itemsBought;
-	}
-	public List<StockItem> getItemsExchanged()
-	{
-		return itemsExchanged;
-	}
-	public void setItemsExchanged(List<StockItem> itemsExchanged)
-	{
-		this.itemsExchanged = itemsExchanged;
-	}
+	
 	public double getTotal()
 	{
 		return total;
@@ -104,6 +77,14 @@ public class Transaction
 	public void setPaymentMethod(String paymentMethod)
 	{
 		this.paymentMethod = paymentMethod;
+	}
+
+	public List<StockItem> getItems() {
+		return items;
+	}
+
+	public void setItems(List<StockItem> items) {
+		this.items = items;
 	}
 	
 	
