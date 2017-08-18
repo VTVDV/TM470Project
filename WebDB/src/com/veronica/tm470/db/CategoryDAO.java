@@ -2,10 +2,7 @@ package com.veronica.tm470.db;
 
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.TreeMap;
-
-import org.eclipse.persistence.platform.database.MySQLPlatform;
 
 import java.util.Map;
 
