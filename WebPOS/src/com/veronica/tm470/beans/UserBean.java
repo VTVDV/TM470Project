@@ -23,6 +23,7 @@ public class UserBean extends AbstractBean implements Serializable
 	private String pass;
 	private int userType;
 	private int id;
+	private User user;
 	//Page to redirect user to.
 	private String page;
 	
@@ -77,6 +78,7 @@ public class UserBean extends AbstractBean implements Serializable
 			{		
 				this.userType = user.getUserType();
 				this.id = user.getId();
+				this.user = user;
 				return page;				
 			}
 			else
@@ -105,4 +107,12 @@ public class UserBean extends AbstractBean implements Serializable
 		// TODO Auto-generated method stub
 		
 	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	
 }

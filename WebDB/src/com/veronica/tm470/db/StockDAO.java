@@ -280,10 +280,10 @@ public class StockDAO extends AbstractDAO
 			statement.setString(4, stockItem.getSerial());
 			statement.setInt(5, stockItem.isFaulty() ? 1 : 0);
 			statement.setString(6, stockItem.getFaultDetails());
-			statement.setInt(7, stockItem.hasSold() ? 1 : 0);
-			statement.setDouble(8, stockItem.getSold());
-			statement.setDouble(9, stockItem.getBoughtCash());
-			statement.setDouble(10, stockItem.getBoughtExchange());
+//			statement.setInt(7, stockItem.hasSold() ? 1 : 0);
+//			statement.setDouble(8, stockItem.getSold());
+//			statement.setDouble(9, stockItem.getBoughtCash());
+//			statement.setDouble(10, stockItem.getBoughtExchange());
 			
 			statement.executeUpdate();
 		}

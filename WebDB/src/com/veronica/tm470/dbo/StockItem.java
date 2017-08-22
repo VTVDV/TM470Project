@@ -2,7 +2,7 @@ package com.veronica.tm470.dbo;
 
 public class StockItem 
 {
-	private int ID;
+	private int id;	
 	private StockRecord stockRecord;
 	private String name;
 	private String serial;
@@ -23,13 +23,16 @@ public class StockItem
 		
 	}
 	
-	public StockItem(StockRecord stockRecord)
+	public StockItem(int id, StockRecord stockRecord, TransactionType transactionType)
 	{
 		this.stockRecord = stockRecord;
 		this.name = stockRecord.getName();
-		this.sellPrice = stockRecord.getSellPrice();
 		this.cashPrice = stockRecord.getCashBuyPrice();
 		this.exchangePrice = stockRecord.getExchangePrice();
+		this.sellPrice = stockRecord.getSellPrice();
+		this.transactionType = transactionType;
+		this.boughtValue = generateBoughtValue();
+		this.id = id;
 	}
 
 	public StockRecord getStockRecord() {
@@ -42,12 +45,12 @@ public class StockItem
 	
 	public int getID() 
 	{
-		return ID;
+		return id;
 	}
 
 	public void setID(int iD) 
 	{
-		ID = iD;
+		id = iD;
 	}
 
 	public String getName() 
@@ -98,6 +101,16 @@ public class StockItem
 	{
 		return isFaulty;
 	}
+	
+	public boolean isBeingSold()
+	{
+		return this.transactionType.equals(TransactionType.SALE);
+	}
+	
+	public boolean isBeingBought()
+	{
+		return this.transactionType.equals(TransactionType.EXCHANGE) || this.transactionType.equals(TransactionType.CASH);
+	}
 
 	public void setFaulty(boolean isFaulty) 
 	{
@@ -139,12 +152,20 @@ public class StockItem
 	}
 
 	public double getBoughtValue() {
-		return boughtValue;
+		return this.boughtValue;
 	}
 
 	public void setBoughtValue(double boughtValue) {
 		this.boughtValue = boughtValue;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(this.id == ((StockItem) obj).getID())
+		{
+			return true;
+		}
+		return false;
+	}
 	
 }

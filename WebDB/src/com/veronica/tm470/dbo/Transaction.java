@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Transaction 
+public class Transaction
 {
 	private int id;
 	private Date date;
@@ -13,7 +13,12 @@ public class Transaction
 	private User user;
 	private Customer customer;
 	private List<StockItem> items;
+	
+	private double buyTotal;
+	private double exchangeTotal;
+	private double sellTotal;
 	private double total;
+	
 	private String paymentMethod;
 	
 	public Transaction()
@@ -61,15 +66,31 @@ public class Transaction
 	{
 		this.customer = customer;
 	}
-	
-	public double getTotal()
-	{
-		return total;
+			
+	public double getBuyTotal() {
+		return buyTotal;
 	}
-	public void setTotal(double total)
-	{
-		this.total = total;
+
+	public void setBuyTotal(double buyTotal) {
+		this.buyTotal = buyTotal;
 	}
+
+	public double getExchangeTotal() {
+		return exchangeTotal;
+	}
+
+	public void setExchangeTotal(double exchangeTotal) {
+		this.exchangeTotal = exchangeTotal;
+	}
+
+	public double getSellTotal() {
+		return sellTotal;
+	}
+
+	public void setSellTotal(double sellTotal) {
+		this.sellTotal = sellTotal;
+	}
+
 	public String getPaymentMethod()
 	{
 		return paymentMethod;

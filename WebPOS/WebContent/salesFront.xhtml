@@ -59,12 +59,9 @@
 	<p:layoutUnit position="east" resizable="true">
 		<p:fieldset legend="Settle" toggleable="true" toggleSpeed="200">
 	        <h:panelGrid columns="1" cellpadding="5">
-       			<p:commandButton value="Cash" icon="fa fa fa-gbp" styleClass="ui-ribbon-bigbutton"
-					style="width:100px" type="button" />
-				<p:commandButton value="Card" icon="fa fa-credit-card" styleClass="ui-ribbon-bigbutton"
-					style="width:100px" type="button" />
-				<p:commandButton value="Voucher" icon="fa fa-file-text-o" styleClass="ui-ribbon-bigbutton"
-					style="width:100px" type="button" />
+       			<p:commandButton id="cash" value="Cash" icon="fa fa fa-gbp" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
+				<p:commandButton id="card" value="Card" icon="fa fa-credit-card" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
+				<p:commandButton id="voucher" value="Voucher" icon="fa fa-file-text-o" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
 	        </h:panelGrid>
     	</p:fieldset>
 	</p:layoutUnit>
@@ -87,27 +84,50 @@
 					<h:outputText value="#{s.exchangePrice}" />
 				</p:column>
 			</p:selectOneMenu>
-			<p:commandButton value="Sell" id="sell" process="@form"></p:commandButton>
-			<p:commandButton value="Buy" id="buy" process="@form" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}" action="#{salesBean.buyStockItem}" update="transactionTable"></p:commandButton>
-			<p:commandButton value="Exhange" id="exchange" process="@form" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}"></p:commandButton>
+			<p:commandButton value="Sell" id="sell" process="@form" action="#{salesBean.sellStockItem}" update="customerButton transactionTable card"></p:commandButton>
+			<p:commandButton value="Buy" id="buy" process="@form" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}" action="#{salesBean.buyStockItem}" update="customerButton transactionTable card"></p:commandButton>
+			<p:commandButton value="Exhange" id="exchange" process="@form" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}" action="#{salesBean.exchangeStockItem}" update="customerButton transactionTable card"></p:commandButton>
 		</h:form>			
-		<p:dataTable id="transactionTable" var="stockItem" value="#{salesBean.transaction.items}" rendered="#{salesBean.transaction != null}">	 
-		    <p:column headerText="Type">
-		    	<h:outputText value="#{stockItem.transactionType.name}" />
-		    </p:column>
-		    <p:column headerText="Name">
-		        <h:outputText value="#{stockItem.name}" />
-		    </p:column>		 
-		    <p:column headerText="Value">
-		    </p:column>
-		</p:dataTable>
+		<h:panelGrid id="transactionTable">
+		<h:form id="transactionForm">
+			<p:dataTable id="transactionTableData" var="stockItem" value="#{salesBean.transaction.items}" selectionMode="single" selection="#{salesBean.selectedStockItem}" rowKey="#{stockItem.ID}">	 
+			    <p:ajax event="rowSelect" listener="#{salesBean.onRowSelect}" update="transactionTable discountButton"/>
+			    <p:column headerText="ID">
+			    	<h:outputText value="#{stockItem.ID}" />
+			    </p:column>	
+			    <p:column headerText="Type">
+			    	<h:outputText value="#{stockItem.transactionType.name}" />
+			    </p:column>
+			    <p:column headerText="Name">
+			        <h:outputText value="#{stockItem.name}" />
+			    </p:column>		 
+			    <p:column headerText="Value">
+			    		<h:outputText value="#{stockItem.boughtValue}" rendered="#{stockItem.beingBought}">
+			    			<f:convertNumber currencyCode="GBP" type="currency"/>
+			    		</h:outputText>
+			    		<h:outputText value="#{stockItem.sellPrice}"  rendered="#{stockItem.beingSold}">
+			    			<f:convertNumber currencyCode="GBP" type="currency"/>
+			    		</h:outputText>	    	
+			    </p:column>
+			    <p:column headerText="Serial Number">
+			    		<h:outputText value="#{stockItem.serial}" rendered="#{not empty stockItem.serial}"/>
+			    </p:column>			    		    
+			    <p:columnGroup type="footer">
+			    	<p:row>
+			    		<p:column colspan="3" style="text-align:right" footerText="Total:"/>
+			    		<p:column style="text-align:left" footerText="#{salesBean.total}">
+			    		</p:column>
+			    	</p:row>			    	
+			    </p:columnGroup>
+			</p:dataTable>
+		</h:form>
+		</h:panelGrid>
 	</p:layoutUnit>
 		<p:layoutUnit position="south" resizable="true">	        
 	        <p:ribbon>
 	        	<p:tab title="Sell">
 	        		<p:ribbonGroup label="">
-						<p:commandButton value="Quantity" icon="fa fa-asterisk" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" onclick="PF('quantity').show();"/>
-						<p:commandButton value="Discount" icon="fa fa-tag" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Discount" id="discountButton" icon="fa fa-tag" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" disabled="#{salesBean.selectedStockItem.beingBought}" onclick="PF('discount').show()"/>
 					</p:ribbonGroup>
 					<p:ribbonGroup label="">
 						<p:commandButton value="Misc. Item" icon="fa fa-plus" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
@@ -116,15 +136,15 @@
 					</p:ribbonGroup>
 					<p:ribbonGroup label="">
 						<h:form>
-							<p:commandButton value="Void Item" icon="fa fa-times-circle" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+							<p:commandButton value="Void Item" icon="fa fa-times-circle" styleClass="ui-ribbon-bigbutton" style="width:100px" process="@form" action="#{salesBean.voidItem}" update="transactionTable"/>
 							<p:commandButton value="Discard Transaction" icon="fa fa-trash" styleClass="ui-ribbon-bigbutton" style="width:100px" process="@form" action="#{salesBean.discardTransaction}" update="customerButton customerDetails stockSelector:buy stockSelector:exchange transactionTable"/>
 						</h:form>
 					</p:ribbonGroup>
 	        	</p:tab>
 	        	<p:tab title="Buy">
 					<p:ribbonGroup label="">
-						<p:commandButton value="Book for Test" icon="fa fa-sign-in" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
-						<p:commandButton value="Check Tests" icon="fa fa-sign-out" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
+						<p:commandButton value="Book for Test" id="makeTest" icon="fa fa-sign-in" styleClass="ui-ribbon-bigbutton" style="width:100px" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}" onclick="PF('bookTest').show()"/>
+						<p:commandButton value="Check Tests" id="getTest" icon="fa fa-sign-out" styleClass="ui-ribbon-bigbutton" style="width:100px" disabled="#{customerBean.selectedCustomer == null || customerBean.selectedCustomer.banned}" />
 					</p:ribbonGroup>
 					<p:ribbonGroup label="">
 						<p:commandButton value="Buy In" icon="fa fa-shopping-cart" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
@@ -178,7 +198,7 @@
 					</p:column>
 				</p:selectOneMenu>
 				<div id="buttons">
-					<p:commandButton value="Select User" action="#{customerBean.validateCustomer}" process="@form" update="customerDetails stockSelector:buy stockSelector:exchange"></p:commandButton>
+					<p:commandButton value="Select User" action="#{customerBean.validateCustomer}" process="@form" update="customerDetails makeTest getTest stockSelector:buy stockSelector:exchange"></p:commandButton>
 				</div>
 				<h:messages> </h:messages>
 			</h:form>	
@@ -211,12 +231,23 @@
 	</p:tabView>    
 </p:dialog>
 
-<!-- QUANTITY -->
-<p:dialog header="Quantity" widgetVar="quantity" modal="true" height="100">
-     <h:panelGrid columns="1" cellpadding="5">
-  		Quantity
-		<h:inputText id="quantity" value="#{stockRecordBean.sellPrice}"/>
-     </h:panelGrid>    	
+<!-- DISCOUNT -->
+<p:dialog header="Discount" widgetVar="discount" modal="true">
+	<h:panelGrid>
+		<h:form>
+			Discount:
+			<h:inputText id="discount" value="#{salesBean.discount}"/>
+				<div>
+					<p:commandButton actionListener="#{salesBean.deductDiscount()}" process="@form" value="Deduct Value" update="transactionTable" onclick="PF('discount').hide()"/>
+				</div>
+				<div>
+					<p:commandButton actionListener="#{salesBean.discountPrice()}" process="@form" value="Deduct Percentage of Value" update="transactionTable" onclick="PF('discount').hide()"/>
+				</div>
+				<div>
+					<p:commandButton actionListener="#{salesBean.setPrice()}" process="@form" value="Change Price to Value" update="transactionTable" onclick="PF('discount').hide()"/>
+				</div>
+		</h:form>
+	</h:panelGrid>
 </p:dialog>
 
 <!-- SERIAL NUMBER -->
@@ -226,6 +257,34 @@
 		<h:inputText id="serial" value="#{salesBean.serialNumber}"></h:inputText>
 	</h:panelGrid>
 </p:dialog>
+
+<!-- BOOK TEST -->
+<p:dialog header="Book a Test" widgetVar="bookTest" modal="true">
+	<h:panelGrid>
+		<h:form id="newTest">
+			Select A Stock Record:
+			<p:selectOneMenu id="testStock" value="#{testBean.itemType}" effect="fade" var="s" filter="true" filterMatchMode="startsWith" converter="stockRecordConverter" panelStyle="width:800px">
+					<f:selectItems value="#{salesBean.stockRecords}" var="stockRecord" itemLabel="#{stockRecord.name}" itemValue="#{stockRecord}"/>
+					<p:column>
+						<h:outputText value="#{s.name}" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{s.sellPrice}"/>
+					</p:column>
+					<p:column>
+						<h:outputText value="#{s.cashBuyPrice}" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{s.exchangePrice}" />
+					</p:column>
+			</p:selectOneMenu>
+			Serial Number:
+			<h:inputText value="#{testBean.serialNumber}" />
+			<p:commandButton value="Book in Test" ></p:commandButton>
+		</h:form>
+	</h:panelGrid>
+</p:dialog>
+
 
 </h:body>
 </html>

@@ -5,15 +5,36 @@ import java.util.Date;
 public class Test
 {
 	private int id;
-	private Date date;
-	private Date time;
-	private String booker; //User who booked in item for test.
-	private String tester; //User who tested item.
+	private Date dateAndTime;
+	private User tester; //User who tested item.
+	private User booker;
 	private Customer customer;
 	
 	private StockRecord itemType;
 	private String serialNumber;
-	private boolean passed; //If the item has passed the test.
+	private int status; //Status of the test, 0 = untested, 1 = pass, 2 = fail.
+	
+	public Test()
+	{
+		
+	}
+	
+	public Test(int id, User booker, Customer customer, StockRecord itemType)
+	{
+		this.id = id;
+		this.booker = booker;
+		this.customer = customer;
+		this.itemType = itemType;
+		this.dateAndTime = new Date();
+	}
+	
+	public Test(User booker, Customer customer, StockRecord itemType)
+	{
+		this.booker = booker;
+		this.customer = customer;
+		this.itemType = itemType;
+		this.dateAndTime = new Date();
+	}
 	
 	public int getId()
 	{
@@ -25,36 +46,37 @@ public class Test
 	}
 	public Date getDate()
 	{
-		return date;
+		return dateAndTime;
 	}
 	public void setDate(Date date)
 	{
-		this.date = date;
+		this.dateAndTime = date;
 	}
 	public Date getTime()
 	{
-		return time;
+		return dateAndTime;
 	}
 	public void setTime(Date time)
 	{
-		this.time = time;
+		this.dateAndTime = time;
 	}
-	public String getBooker()
-	{
-		return booker;
-	}
-	public void setBooker(String booker)
-	{
-		this.booker = booker;
-	}
-	public String getTester()
-	{
+	
+	public User getTester() {
 		return tester;
 	}
-	public void setTester(String tester)
-	{
+
+	public void setTester(User tester) {
 		this.tester = tester;
 	}
+
+	public User getBooker() {
+		return booker;
+	}
+
+	public void setBooker(User booker) {
+		this.booker = booker;
+	}
+
 	public Customer getCustomer()
 	{
 		return customer;
@@ -79,13 +101,21 @@ public class Test
 	{
 		this.serialNumber = serialNumber;
 	}
-	public boolean isPassed()
-	{
-		return passed;
+
+	public Date getDateAndTime() {
+		return dateAndTime;
 	}
-	public void setPassed(boolean passed)
-	{
-		this.passed = passed;
+
+	public void setDateAndTime(Date dateAndTime) {
+		this.dateAndTime = dateAndTime;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 	
 	
