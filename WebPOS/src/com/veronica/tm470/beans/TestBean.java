@@ -8,19 +8,22 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 
+import com.veronica.tm470.db.TestDAO;
 import com.veronica.tm470.dbo.Customer;
 import com.veronica.tm470.dbo.StockItem;
 import com.veronica.tm470.dbo.StockRecord;
 import com.veronica.tm470.dbo.Test;
+import com.veronica.tm470.dbo.TransactionType;
+import com.veronica.tm470.exceptions.WebDBException;
 
 @ManagedBean
 @SessionScoped
 public class TestBean extends AbstractBean implements Serializable {
 	private int id;
-	private Date date;
-	private Date time;
+	private Date datetime;
 	private String booker; //User who booked in item for test.
 	private String tester; //User who tested item.
+	private String checker;
 	private Customer customer;
 	private StockRecord itemType;
 	private String serialNumber;
@@ -44,8 +47,35 @@ public class TestBean extends AbstractBean implements Serializable {
 		stockItem.setID(salesBean.generateId());
 		stockItem.setName("TEST: " + itemType.getName());
 		stockItem.setSerial(serialNumber);
+		stockItem.setTransactionType(TransactionType.TEST);
+		salesBean.transactionCheck();
+		salesBean.getTransaction().getItems().add(stockItem);
 		Test test = new Test(userBean.getUser(), customerBean.getSelectedCustomer(), itemType);
+		test.setSerialNumber(serialNumber);
+		test.setStatus(0);
+		TestDAO dao = new TestDAO();
+		try 
+		{
+			dao.addTest(test);
+		} 
+		catch (WebDBException e) 
+		{
+			e.printStackTrace();
+		}
 		return null;
+	}
+	
+	@Override
+	protected void clearForm() {
+		this.datetime = null;
+		this.booker = null;
+		this.tester = null;
+		this.checker = null;
+		this.customer = null;
+		this.itemType = null;
+		this.serialNumber = null;
+		this.passed = false;
+		this.selectedTest = null;		
 	}
 	
 	public int getId() {
@@ -56,20 +86,12 @@ public class TestBean extends AbstractBean implements Serializable {
 		this.id = id;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getDatetime() {
+		return datetime;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public Date getTime() {
-		return time;
-	}
-
-	public void setTime(Date time) {
-		this.time = time;
+	public void setDatetime(Date datetime) {
+		this.datetime = datetime;
 	}
 
 	public String getBooker() {
@@ -128,11 +150,6 @@ public class TestBean extends AbstractBean implements Serializable {
 		this.tests = tests;
 	}
 
-	@Override
-	protected void clearForm() {
-		// TODO Auto-generated method stub		
-	}
-
 	public Test getSelectedTest() {
 		return selectedTest;
 	}
@@ -140,5 +157,30 @@ public class TestBean extends AbstractBean implements Serializable {
 	public void setSelectedTest(Test selectedTest) {
 		this.selectedTest = selectedTest;
 	}
+
+	public SalesBean getSalesBean() {
+		return salesBean;
+	}
+
+	public void setSalesBean(SalesBean salesBean) {
+		this.salesBean = salesBean;
+	}
+
+	public UserBean getUserBean() {
+		return userBean;
+	}
+
+	public void setUserBean(UserBean userBean) {
+		this.userBean = userBean;
+	}
+
+	public CustomerBean getCustomerBean() {
+		return customerBean;
+	}
+
+	public void setCustomerBean(CustomerBean customerBean) {
+		this.customerBean = customerBean;
+	}
+	
 	
 }

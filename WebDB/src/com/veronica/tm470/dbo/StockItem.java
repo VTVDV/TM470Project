@@ -104,12 +104,17 @@ public class StockItem
 	
 	public boolean isBeingSold()
 	{
-		return this.transactionType.equals(TransactionType.SALE);
+		return this.transactionType.equals(TransactionType.SALE)||
+		this.transactionType.equals(TransactionType.MISC) ||
+		this.transactionType.equals(TransactionType.DEPOSIT);
 	}
 	
 	public boolean isBeingBought()
 	{
-		return this.transactionType.equals(TransactionType.EXCHANGE) || this.transactionType.equals(TransactionType.CASH);
+		return this.transactionType.equals(TransactionType.EXCHANGE) ||
+		this.transactionType.equals(TransactionType.CASH) ||
+		this.transactionType.equals(TransactionType.TEST) ||
+		this.transactionType.equals(TransactionType.BUYBACK);
 	}
 
 	public void setFaulty(boolean isFaulty) 
