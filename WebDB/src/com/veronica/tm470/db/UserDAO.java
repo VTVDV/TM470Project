@@ -64,6 +64,47 @@ public class UserDAO extends AbstractDAO
 		return user;
 	}
 	
+	public User getUser(int id) throws Exception
+	{
+		Connection connection = null;
+		PreparedStatement statement = null;
+		
+		User user = null;
+		try
+		{
+			connection = getConnection();
+			statement = connection.prepareStatement("SELECT * FROM tbl_user WHERE USER_ID = ?");
+			statement.setInt(1, id);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) 
+			{
+				int userId = rs.getInt("USER_ID");
+				String username = rs.getString("USER_NAME");
+				String pass = rs.getString("PASSWORD");
+				int usertype = rs.getInt("USERTYPE");
+				user = new User(id, username, pass, usertype);
+			}			
+			return user;
+		}
+		catch(SQLException exception)
+		{
+			exception.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				close(statement, connection);
+			}
+			catch(SQLException sqlxstate)
+			{
+				sqlxstate.printStackTrace();
+				System.out.println("There was an error closing the statement.");
+			}			
+		}
+		return user;
+	}
+	
 	public Map<Integer, User> getUsers() throws Exception
 	{
 		Connection connection = null;

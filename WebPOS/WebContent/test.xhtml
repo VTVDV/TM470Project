@@ -23,6 +23,9 @@
 	<f:attribute name="page" value="login"/>
 </c:if>
 
+<!-- POPULATE TEST TABLE -->
+<f:event type="preRenderView" listener="#{testBean.fetchTests()}"/>
+
 <h:body>
 <div class = "header">
 	<div class = "headerText">
@@ -30,44 +33,192 @@
 	</div>
 </div>
 
+
 <div class="box">
-	<p:tabView>
-		<p:tab title="Tests">
-			<p:dataTable var="Test" value="">
+	<p:tabView id="tabs" widgetVar="tabs" dynamic="true">	
+		<p:tab title="Active Tests">
+			<h:form id="activeForm">
+			<p:dataTable id="activeTable" var="Test" value="#{testBean.activeTests}" selectionMode="single" selection="#{testBean.selectedTest}" rowKey="#{Test.id}">
+			    <p:ajax event="rowSelect" listener="#{testBean.onRowSelect}" update="tabs:activeForm:activeTable:testButton"/>
+			    <p:column headerText="Date" sortBy="#{Test.date}">
+			        <h:outputText value="#{Test.date}" />
+			    </p:column>		 
+			    <p:column headerText="Time" sortBy="#{Test.time}">
+			        <h:outputText value="#{Test.time}" />
+			    </p:column>		 
+			    <p:column headerText="Test ID" sortBy="#{Test.id}">
+			        <h:outputText value="#{Test.id}" />
+			    </p:column>
+			    <p:column headerText="Customer" sortBy="#{Test.customer.fullName}">
+			        <h:outputText value="#{Test.customer.fullName}" />
+			    </p:column>
+			    <p:column headerText="Item" sortBy="#{Test.itemType.name}">
+			        <h:outputText value="#{Test.itemType.name}" />
+			    </p:column>
+			    <p:column headerText="SN" sortBy="#{Test.serialNumber}">
+			        <h:outputText value="#{Test.serialNumber}" />
+			    </p:column>
+			    <p:column headerText="Status" sortBy="#{Test.statusAsString}">
+			        <h:outputText value="#{Test.statusAsString}" />
+			    </p:column>
+			    <p:column headerText="Booked in By" sortBy="#{Test.booker.name}">
+			        <h:outputText value="#{Test.booker.name}" />
+			    </p:column>
+			    <p:column headerText="Tested By" sortBy="#{Test.tester.name}">
+			        <c:when test="#{not empty Test.tester.name}">
+			        	<h:outputText value="#{Test.tester.name}" />
+			        </c:when>
+			        <c:otherwise>
+			        	<h:outputText value="-" />
+			        </c:otherwise>
+			    </p:column>
+			    <p:column headerText="Checked Out By" sortBy="#{Test.checker.name}">
+			        <c:when test="#{not empty Test.checker.name}">
+			        	<h:outputText value="#{Test.checker.name}" />
+			        </c:when>
+			        <c:otherwise>
+			        	<h:outputText value="-" />
+			        </c:otherwise>
+			    </p:column>
+			    <p:column headerText="Do Not Format">
+			    	<h:outputText value="#{Test.notToBeFormatted}" />
+			    </p:column>
+			    <f:facet name="footer">
+			    	<p:commandButton id="testButton" update="tabs:test" process="@form" onclick="PF('tabs').select(3)" value="Test" icon="fa fa-flask" disabled="#{empty testBean.selectedTest}"></p:commandButton>
+			    </f:facet>
+			</p:dataTable>
+			</h:form>
+		</p:tab>
+		
+		<p:tab title="Inactive Tests">
+			<p:dataTable var="Test" value="#{testBean.inactiveTests}">
 			    <p:column headerText="Date">
-			        <h:outputText value="" />
+			        <h:outputText value="#{Test.date}" />
 			    </p:column>		 
 			    <p:column headerText="Time">
-			        <h:outputText value="" />
+			        <h:outputText value="#{Test.time}" />
 			    </p:column>		 
-			    <p:column headerText="Test Number">
-			        <h:outputText value="" />
+			    <p:column headerText="Test ID">
+			        <h:outputText value="#{Test.id}" />
 			    </p:column>
 			    <p:column headerText="Customer">
-			        <h:outputText value="" />
+			        <h:outputText value="#{Test.customer.fullName}" />
 			    </p:column>
 			    <p:column headerText="Item">
-			        <h:outputText value="" />
+			        <h:outputText value="#{Test.itemType.name}" />
 			    </p:column>
 			    <p:column headerText="SN">
-			        <h:outputText value="" />
+			        <h:outputText value="#{Test.serialNumber}" />
 			    </p:column>
 			    <p:column headerText="Status">
-			        <h:outputText value="" />
+			        <h:outputText value="#{Test.statusAsString}" />
 			    </p:column>
-			    <p:column headerText="User">
-			        <h:outputText value="" />
+			    <p:column headerText="Booked in By">
+			        <h:outputText value="#{Test.booker.name}" />
 			    </p:column>
 			    <p:column headerText="Tested By">
-			        <h:outputText value="" />
+			        <c:when test="#{not empty Test.tester.name}">
+			        	<h:outputText value="#{Test.tester.name}" />
+			        </c:when>
+			        <c:otherwise>
+			        	<h:outputText value="-" />
+			        </c:otherwise>
 			    </p:column>
-			    <p:column headerText="Action">
-			        <h:outputText value="" />
+			    <p:column headerText="Checked Out By">
+			        <c:when test="#{not empty Test.checker.name}">
+			        	<h:outputText value="#{Test.checker.name}" />
+			        </c:when>
+			        <c:otherwise>
+			        	<h:outputText value="-" />
+			        </c:otherwise>
+			    </p:column>
+			    <p:column headerText="Do Not Format">
+			    	<h:outputText value="#{Test.notToBeFormatted}" />
 			    </p:column>
 			</p:dataTable>
 		</p:tab>
-		<p:tab title="Test Form">
+		
+		<p:tab title="All Tests">
+			<p:dataTable var="Test" value="#{testBean.allTests}">
+			    <p:column headerText="Date">
+			        <h:outputText value="#{Test.date}" />
+			    </p:column>		 
+			    <p:column headerText="Time">
+			        <h:outputText value="#{Test.time}" />
+			    </p:column>		 
+			    <p:column headerText="Test ID">
+			        <h:outputText value="#{Test.id}" />
+			    </p:column>
+			    <p:column headerText="Customer">
+			        <h:outputText value="#{Test.customer.fullName}" />
+			    </p:column>
+			    <p:column headerText="Item">
+			        <h:outputText value="#{Test.itemType.name}" />
+			    </p:column>
+			    <p:column headerText="SN">
+			        <h:outputText value="#{Test.serialNumber}" />
+			    </p:column>
+			    <p:column headerText="Status">
+			        <h:outputText value="#{Test.statusAsString}" />
+			    </p:column>
+			    <p:column headerText="Booked in By">
+			        <h:outputText value="#{Test.booker.name}" />
+			    </p:column>
+			    <p:column headerText="Tested By">
+			        <c:when test="#{not empty Test.tester.name}">
+			        	<h:outputText value="#{Test.tester.name}" />
+			        </c:when>
+			        <c:otherwise>
+			        	<h:outputText value="-" />
+			        </c:otherwise>
+			    </p:column>
+			    <p:column headerText="Checked Out By">
+			        <c:when test="#{not empty Test.checker.name}">
+			        	<h:outputText value="#{Test.checker.name}" />
+			        </c:when>
+			        <c:otherwise>
+			        	<h:outputText value="-" />
+			        </c:otherwise>
+			    </p:column>
+			    <p:column headerText="Do Not Format">
+			    	<h:outputText value="#{Test.notToBeFormatted}" />
+			    </p:column>
+			</p:dataTable>
 		</p:tab>
+		
+		<p:tab id="testTab" title="Test Form" rendered="#{not empty testBean.selectedTest}">
+		<h:panelGroup id="test">
+			<h:form id="testForm">
+			<div>
+				<p:messages for="testMessage" showDetail="true" autoUpdate="true" closable="true" />
+				<div>
+					Date Booked In: <h:outputText value="#{testBean.selectedTest.date}" />
+				</div>
+				<div>
+					Time Booked In: <h:outputText value="#{testBean.selectedTest.time}" />
+				</div>
+				<div>
+					Test ID: <h:outputText value="#{testBean.selectedTest.id}" />
+				</div>
+				<div>
+					Customer: <h:outputText value="#{testBean.selectedTest.customer.fullName}" />
+				</div>
+				<div>
+					Item: <h:outputText value="#{testBean.selectedTest.itemType.name}" />
+				</div>
+				<div>
+					Serial Number: <h:outputText value="#{testBean.serialNumber}" />
+				</div>
+				<div>
+					Booked in by: <h:outputText value="#{testBean.selectedTest.booker.name}" />
+				</div>
+				<div>
+					Being tested by: <h:outputText value="#{userBean.user.name}" />
+				</div>
+			</div>
+			</h:form>
+		</h:panelGroup>
+		</p:tab>		
 	</p:tabView>
 </div>
 

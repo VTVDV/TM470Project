@@ -1,5 +1,7 @@
 package com.veronica.tm470.dbo;
 
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -16,7 +18,19 @@ public class Test
 	private StockRecord itemType;
 	private boolean notToBeFormatted; //If the item in test is to be formatted or not.
 	private String serialNumber;
-	private int status; //Status of the test, 0 = untested, 1 = pass, 2 = fail, 3 = Bought in, 4 = Declined and item returned to customer.
+	private int status; 
+	/*Status of the test, 
+	 * 0 = untested, 
+	 * 1 = pass, 
+	 * 2 = fail, 
+	 * 3 = Bought in, 
+	 * 4 = Declined and item returned to customer,
+	 * 5 = Warranty Test: Untested,
+	 * 6 = Warranty Test: Faulty,
+	 * 7 = Warranty Test: Fault Not Found,
+	 * 8 = Warranty Test: Returned to Customer,
+	 * 9 = Warranty Test: Refunded,
+	 * 10 = Warranty Test: Repaired/Replaced*/
 	
 	public Test()
 	{
@@ -119,6 +133,32 @@ public class Test
 	public void setNotToBeFormatted(boolean notToBeFormatted) {
 		this.notToBeFormatted = notToBeFormatted;
 	}
-	
+	public String getDate()
+	{
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		return format.format(dateAndTime);
+	}
+	public String getTime()
+	{
+		SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+		return format.format(dateAndTime);
+	}
+	public String getStatusAsString()
+	{
+		switch(this.status){
+			case 0: return "Untested";
+			case 1: return "Passed";
+			case 2: return "Fail";
+			case 3: return "Bought In";
+			case 4: return "Returned to Customer";
+			case 5: return "Warranty Test: Untested";
+			case 6: return "Warranty Test: Faulty";
+			case 7: return "Warranty Test: Fault Not Found";
+			case 8: return "Warranty Test: Returned to Customer";
+			case 9: return "Warranty Test: Refunded";
+			case 10: return "Warranty Test: Repaired/Replaced";
+			default: return "Unkown?";
+		}
+	}
 	
 }

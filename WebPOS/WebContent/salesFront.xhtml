@@ -280,6 +280,8 @@
 			</p:selectOneMenu>
 			Serial Number:
 			<h:inputText value="#{testBean.serialNumber}" />
+			Do NOT format:
+			<p:selectBooleanCheckbox value="#{testBean.doNotFormat}" />
 			<p:commandButton value="Book in Test" process="@form" action="#{testBean.createTest()}" onclick="PF('bookTest').hide()" update="transactionTable"></p:commandButton>
 		</h:form>
 	</h:panelGrid>

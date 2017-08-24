@@ -5,8 +5,12 @@ import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.SelectEvent;
 
 import com.veronica.tm470.db.TestDAO;
 import com.veronica.tm470.dbo.Customer;
@@ -27,10 +31,12 @@ public class TestBean extends AbstractBean implements Serializable {
 	private Customer customer;
 	private StockRecord itemType;
 	private String serialNumber;
-	private boolean passed;
+	private boolean doNotFormat;
 	
 	private Test selectedTest;
-	private List<Test> tests;
+	private List<Test> allTests;
+	private List<Test> activeTests;
+	private List<Test> inactiveTests;
 	
 	@ManagedProperty(value = "#{salesBean}")
 	private SalesBean salesBean;
@@ -53,6 +59,7 @@ public class TestBean extends AbstractBean implements Serializable {
 		Test test = new Test(userBean.getUser(), customerBean.getSelectedCustomer(), itemType);
 		test.setSerialNumber(serialNumber);
 		test.setStatus(0);
+		test.setNotToBeFormatted(doNotFormat);
 		TestDAO dao = new TestDAO();
 		try 
 		{
@@ -65,6 +72,35 @@ public class TestBean extends AbstractBean implements Serializable {
 		return null;
 	}
 	
+	public String fetchTests()
+	{
+		fetchActiveTests();
+		fetchInactiveTests();
+		fetchAllTests();
+		return null;
+	}
+	
+	public String fetchActiveTests()
+	{
+		TestDAO dao = new TestDAO();
+		this.activeTests = dao.getActiveTests();		
+		return null;
+	}
+	
+	public String fetchInactiveTests()
+	{
+		TestDAO dao = new TestDAO();
+		this.inactiveTests = dao.getInactiveTests();		
+		return null;
+	}
+	
+	public String fetchAllTests()
+	{
+		TestDAO dao = new TestDAO();
+		this.allTests = dao.getTests();
+		return null;
+	}
+	
 	@Override
 	protected void clearForm() {
 		this.datetime = null;
@@ -74,7 +110,7 @@ public class TestBean extends AbstractBean implements Serializable {
 		this.customer = null;
 		this.itemType = null;
 		this.serialNumber = null;
-		this.passed = false;
+		this.doNotFormat = false;
 		this.selectedTest = null;		
 	}
 	
@@ -134,20 +170,20 @@ public class TestBean extends AbstractBean implements Serializable {
 		this.serialNumber = serialNumber;
 	}
 
-	public boolean isPassed() {
-		return passed;
+	public boolean isDoNotFormat() {
+		return doNotFormat;
 	}
 
-	public void setPassed(boolean passed) {
-		this.passed = passed;
+	public void setDoNotFormat(boolean doNotFormat) {
+		this.doNotFormat = doNotFormat;
 	}
 
 	public List<Test> getTests() {
-		return tests;
+		return inactiveTests;
 	}
 
 	public void setTests(List<Test> tests) {
-		this.tests = tests;
+		this.inactiveTests = tests;
 	}
 
 	public Test getSelectedTest() {
@@ -181,6 +217,47 @@ public class TestBean extends AbstractBean implements Serializable {
 	public void setCustomerBean(CustomerBean customerBean) {
 		this.customerBean = customerBean;
 	}
+
+	public String getChecker() {
+		return checker;
+	}
+
+	public void setChecker(String checker) {
+		this.checker = checker;
+	}
+
+	public List<Test> getAllTests() {
+		return allTests;
+	}
+
+	public void setAllTests(List<Test> allTests) {
+		this.allTests = allTests;
+	}
+
+	public List<Test> getActiveTests() {
+		return activeTests;
+	}
+
+	public void setActiveTests(List<Test> activeTests) {
+		this.activeTests = activeTests;
+	}
+
+	public List<Test> getInactiveTests() {
+		return inactiveTests;
+	}
+
+	public void setInactiveTests(List<Test> inactiveTests) {
+		this.inactiveTests = inactiveTests;
+	}
 	
+	public void onRowSelect(SelectEvent event)
+	{
+		this.selectedTest = ((Test)  event.getObject());
+		if(this.selectedTest.isNotToBeFormatted()==true)
+		{
+			FacesContext.getCurrentInstance().addMessage("testMessage", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"WARNING!", "This item is NOT to be formatted!"));
+		}
+	}
 	
 }
