@@ -146,7 +146,7 @@ public class SalesBean extends AbstractBean implements Serializable {
 			transaction.setExchangeTotal(transaction.getExchangeTotal() + stockItem.getBoughtValue());
 			this.exchangeTotal = transaction.getExchangeTotal();
 		}
-		else if(stockItem.getTransactionType().equals(TransactionType.SALE))
+		else if(stockItem.isBeingSold())
 		{
 			transaction.setSellTotal(transaction.getSellTotal() + stockItem.getSellPrice());
 			this.sellTotal = transaction.getSellTotal();
@@ -177,7 +177,7 @@ public class SalesBean extends AbstractBean implements Serializable {
 		{
 			this.exchangeTotal = this.exchangeTotal - selectedStockItem.getBoughtValue();
 		}
-		if(this.selectedStockItem.getTransactionType().equals(TransactionType.SALE))
+		if(this.selectedStockItem.isBeingSold())
 		{
 			this.sellTotal = this.sellTotal - selectedStockItem.getSellPrice();
 		}

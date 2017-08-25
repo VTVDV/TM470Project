@@ -157,6 +157,7 @@ public class Test
 			case 8: return "Warranty Test: Returned to Customer";
 			case 9: return "Warranty Test: Refunded";
 			case 10: return "Warranty Test: Repaired/Replaced";
+			case 11: return "Test Voided";
 			default: return "Unkown?";
 		}
 	}

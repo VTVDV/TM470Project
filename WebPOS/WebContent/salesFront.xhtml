@@ -90,7 +90,7 @@
 		</h:form>			
 		<h:panelGrid id="transactionTable">
 		<h:form id="transactionForm">
-			<p:dataTable id="transactionTableData" var="stockItem" value="#{salesBean.transaction.items}" selectionMode="single" selection="#{salesBean.selectedStockItem}" rowKey="#{stockItem.ID}">	 
+			<p:dataTable id="transactionTableData" var="stockItem" value="#{salesBean.transaction.items}" selectionMode="single" selection="#{salesBean.selectedStockItem}" rowKey="#{stockItem.ID}" resizableColumns="true" >	 
 			    <p:ajax event="rowSelect" listener="#{salesBean.onRowSelect}" update="transactionTable discountButton"/>
 			    <p:column headerText="ID">
 			    	<h:outputText value="#{stockItem.ID}" />
@@ -98,7 +98,7 @@
 			    <p:column headerText="Type">
 			    	<h:outputText value="#{stockItem.transactionType.name}" />
 			    </p:column>
-			    <p:column headerText="Name">
+			    <p:column headerText="Name" style="white-space : normal;">
 			        <h:outputText value="#{stockItem.name}" />
 			    </p:column>		 
 			    <p:column headerText="Value">
@@ -130,9 +130,10 @@
 						<p:commandButton value="Discount" id="discountButton" icon="fa fa-tag" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" disabled="#{salesBean.selectedStockItem.beingBought}" onclick="PF('discount').show()"/>
 					</p:ribbonGroup>
 					<p:ribbonGroup label="">
-						<p:commandButton value="Misc. Item" icon="fa fa-plus" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
-						<p:commandButton value="Deposit" icon="fa fa-bookmark-o" styleClass="ui-ribbon-bigbutton"
-							style="width:100px" type="button" />
+						<h:form>
+							<p:commandButton value="Misc. Item" onclick="PF('misc').show()" process="@form" icon="fa fa-plus" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
+							<p:commandButton value="Deposit" onclick="PF('deposit').show()" process="@form" icon="fa fa-bookmark-o" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
+						</h:form>
 					</p:ribbonGroup>
 					<p:ribbonGroup label="">
 						<h:form>
@@ -159,7 +160,7 @@
 						<c:if test="#{userBean.userType eq 1}">
 							<p:commandButton value="Refund" icon="fa fa-money" styleClass="ui-ribbon-bigbutton" style="width:100px" type="button" />
 						</c:if>
-						<p:commandButton value="Exchange" icon="fa fa-arrows-h" styleClass="ui-ribbon-bigbutton"	style="width:100px" type="button" />
+						<p:commandButton value="Exchange Faulty Item" icon="fa fa-arrows-h" styleClass="ui-ribbon-bigbutton"	style="width:100px" type="button" />
 					</p:ribbonGroup>
 				</p:tab>
 				<p:tab title="Misc.">
@@ -229,6 +230,56 @@
 			</h:form>
 		</p:tab>
 	</p:tabView>    
+</p:dialog>
+
+<!-- DEPOSIT -->
+<p:dialog header="Deposit" widgetVar="deposit" modal="true">
+	<h:panelGrid>
+		<h:form>
+			<div>
+				Select A Stock Record:
+				<p:selectOneMenu id="testStock" value="#{depositBean.itemType}" effect="fade" var="s" filter="true" filterMatchMode="startsWith" converter="stockRecordConverter" panelStyle="width:800px">
+						<f:selectItems value="#{salesBean.stockRecords}" var="stockRecord" itemLabel="#{stockRecord.name}" itemValue="#{stockRecord}"/>
+						<p:column>
+							<h:outputText value="#{s.name}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{s.sellPrice}"/>
+						</p:column>
+						<p:column>
+							<h:outputText value="#{s.cashBuyPrice}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{s.exchangePrice}" />
+						</p:column>
+				</p:selectOneMenu>
+			</div>
+			<div>
+				Deposit Amount:
+				<h:inputText value="#{depositBean.value}" />
+			</div>
+			<div>
+				<p:commandButton value="Place Deposit" process="@form" action="#{depositBean.createDeposit()}" onclick="PF('deposit').hide()" update="transactionTable"></p:commandButton>
+			</div>
+		</h:form>
+	</h:panelGrid>
+</p:dialog>
+
+<!-- MISC. ITEM -->
+<p:dialog header="Misc. Item" widgetVar="misc" modal="true">
+	<h:panelGrid>
+		<h:form>
+			<div>
+				Item Name:
+				<h:inputText value="#{miscBean.name}"/>				
+			</div>
+			<div>
+				Sell Price:
+				<h:inputText value="#{miscBean.sellPrice}" />
+			</div>
+			<p:commandButton value="Sell Misc. Item" process="@form" action="#{miscBean.createMiscItem()}" onclick="PF('misc').hide()" update="transactionTable"></p:commandButton>
+		</h:form>
+	</h:panelGrid>
 </p:dialog>
 
 <!-- DISCOUNT -->
