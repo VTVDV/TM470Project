@@ -73,7 +73,7 @@
 						<p id="cid#{stockRecord.id}" style='display: none;'>#{stockRecord.category.id}</p>
 					</p:column >
 					<p:column headerText="Quantity">						
-						Not yet implemented
+						#{stockRecord.stockItems.size()}
 					</p:column>
 					<p:column headerText="Sell Price" sortBy="#{stockRecord.sellPrice}">
 						<p id="sp#{stockRecord.id}">#{stockRecord.sellPrice}</p>

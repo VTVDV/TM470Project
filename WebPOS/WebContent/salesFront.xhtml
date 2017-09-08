@@ -59,9 +59,9 @@
 	<p:layoutUnit position="east" resizable="true">
 		<p:fieldset legend="Settle" toggleable="true" toggleSpeed="200">
 	        <h:panelGrid columns="1" cellpadding="5">
-       			<p:commandButton id="cash" value="Cash" icon="fa fa fa-gbp" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
-				<p:commandButton id="card" value="Card" icon="fa fa-credit-card" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
-				<p:commandButton id="voucher" value="Voucher" icon="fa fa-file-text-o" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
+       			<p:commandButton id="cash" value="Cash" onclick="PF('cash').show()" icon="fa fa fa-gbp" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
+				<p:commandButton id="card" value="Card" onclick="PF('card').show()" icon="fa fa-credit-card" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
+				<p:commandButton id="voucher" value="Voucher" onclick="PF('voucher').show()" icon="fa fa-file-text-o" styleClass="ui-ribbon-bigbutton" style="width:100px"/>
 	        </h:panelGrid>
     	</p:fieldset>
 	</p:layoutUnit>
@@ -338,6 +338,29 @@
 	</h:panelGrid>
 </p:dialog>
 
+<!-- CARD -->
+<p:dialog header="Card Payment" widgetVar="card" modal="true">
+<h:form>
+	<p:inputText value="#{salesBean.card}"></p:inputText>
+	<p:commandButton value="Settle" process="@form" action="#{salesBean.settle()}" update="transactionTable" onclick="PF('card').hide()"></p:commandButton>
+</h:form>
+</p:dialog>
+
+<!-- CASH -->
+<p:dialog header="Cash Payment" widgetVar="cash" modal="true">
+<h:form>
+	<p:inputText value="#{salesBean.cash}"></p:inputText>
+	<p:commandButton value="Settle" process="@form" action="#{salesBean.settle()}" update="transactionTable" onclick="PF('cash').hide()"></p:commandButton>
+</h:form>
+</p:dialog>
+
+<!-- VOUCHER -->
+<p:dialog header="Voucher Payment" widgetVar="voucher" modal="true">
+<h:form>
+	<p:inputText value="#{salesBean.voucher}"></p:inputText>
+	<p:commandButton value="Settle" process="@form" action="#{salesBean.settle()}" update="transactionTable" onclick="PF('voucher').hide()"></p:commandButton>
+</h:form>
+</p:dialog>
 
 </h:body>
 </html>

@@ -25,30 +25,30 @@ import com.veronica.tm470.exceptions.WebDBException;
 public class TestBean extends AbstractBean implements Serializable {
 	private int id;
 	private Date datetime;
-	private String booker; //User who booked in item for test.
-	private String tester; //User who tested item.
+	private String booker; // User who booked in item for test.
+	private String tester; // User who tested item.
 	private String checker;
 	private Customer customer;
 	private StockRecord itemType;
 	private String serialNumber;
+	private String faultyReason;
 	private boolean doNotFormat;
-	
+
 	private Test selectedTest;
 	private List<Test> allTests;
 	private List<Test> activeTests;
 	private List<Test> inactiveTests;
-	
+
 	@ManagedProperty(value = "#{salesBean}")
 	private SalesBean salesBean;
-	
+
 	@ManagedProperty(value = "#{userBean}")
 	private UserBean userBean;
-	
+
 	@ManagedProperty(value = "#{customerBean}")
 	private CustomerBean customerBean;
-	
-	public String createTest()
-	{
+
+	public String createTest() {
 		StockItem stockItem = new StockItem();
 		stockItem.setID(salesBean.generateId());
 		stockItem.setName("TEST: " + itemType.getName());
@@ -61,46 +61,39 @@ public class TestBean extends AbstractBean implements Serializable {
 		test.setStatus(0);
 		test.setNotToBeFormatted(doNotFormat);
 		TestDAO dao = new TestDAO();
-		try 
-		{
+		try {
 			dao.addTest(test);
-		} 
-		catch (WebDBException e) 
-		{
+		} catch (WebDBException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	public String fetchTests()
-	{
+
+	public String fetchTests() {
 		fetchActiveTests();
 		fetchInactiveTests();
 		fetchAllTests();
 		return null;
 	}
-	
-	public String fetchActiveTests()
-	{
+
+	public String fetchActiveTests() {
 		TestDAO dao = new TestDAO();
-		this.activeTests = dao.getActiveTests();		
+		this.activeTests = dao.getActiveTests();
 		return null;
 	}
-	
-	public String fetchInactiveTests()
-	{
+
+	public String fetchInactiveTests() {
 		TestDAO dao = new TestDAO();
-		this.inactiveTests = dao.getInactiveTests();		
+		this.inactiveTests = dao.getInactiveTests();
 		return null;
 	}
-	
-	public String fetchAllTests()
-	{
+
+	public String fetchAllTests() {
 		TestDAO dao = new TestDAO();
 		this.allTests = dao.getTests();
 		return null;
 	}
-	
+
 	@Override
 	protected void clearForm() {
 		this.datetime = null;
@@ -111,9 +104,9 @@ public class TestBean extends AbstractBean implements Serializable {
 		this.itemType = null;
 		this.serialNumber = null;
 		this.doNotFormat = false;
-		this.selectedTest = null;		
+		this.selectedTest = null;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -249,15 +242,21 @@ public class TestBean extends AbstractBean implements Serializable {
 	public void setInactiveTests(List<Test> inactiveTests) {
 		this.inactiveTests = inactiveTests;
 	}
-	
-	public void onRowSelect(SelectEvent event)
-	{
-		this.selectedTest = ((Test)  event.getObject());
-		if(this.selectedTest.isNotToBeFormatted()==true)
-		{
-			FacesContext.getCurrentInstance().addMessage("testMessage", new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"WARNING!", "This item is NOT to be formatted!"));
+
+	public void onRowSelect(SelectEvent event) {
+		this.selectedTest = ((Test) event.getObject());
+		if (this.selectedTest.isNotToBeFormatted() == true) {
+			FacesContext.getCurrentInstance().addMessage("testMessage",
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "WARNING!", "This item is NOT to be formatted!"));
 		}
 	}
-	
+
+	public String getFaultyReason() {
+		return faultyReason;
+	}
+
+	public void setFaultyReason(String faultyReason) {
+		this.faultyReason = faultyReason;
+	}
+
 }

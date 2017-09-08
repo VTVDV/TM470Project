@@ -1,7 +1,9 @@
 package com.veronica.tm470.beans;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -11,9 +13,11 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.lang.StringUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 import com.veronica.tm470.db.StockDAO;
+import com.veronica.tm470.db.TransactionDAO;
 import com.veronica.tm470.dbo.Customer;
 import com.veronica.tm470.dbo.StockItem;
 import com.veronica.tm470.dbo.StockRecord;
@@ -34,7 +38,14 @@ public class SalesBean extends AbstractBean implements Serializable {
 	private double exchangeTotal;
 	private double sellTotal;
 	private double total;
-	
+
+	private double cash;
+	private double card;
+	private double voucher;
+
+	private double voucherChange;
+	private double change;
+
 	private int id;
 
 	@ManagedProperty(value = "#{customerBean}")
@@ -53,7 +64,60 @@ public class SalesBean extends AbstractBean implements Serializable {
 		return null;
 	}
 
-	public String settleCash() {
+	public String settle() {
+		if (voucher >= total) {
+			setTransactionTimeDate();
+			voucherChange = voucher - total;
+			RequestContext.getCurrentInstance().execute("window.open('Receipt.xhtml')");
+			TransactionDAO dao = new TransactionDAO();
+			try {
+				dao.addTransaction(transaction);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			discardTransaction();
+		}
+		if (cash >= total) {
+			setTransactionTimeDate();
+			change = cash - total;
+			RequestContext.getCurrentInstance().execute("window.open('Receipt.xhtml')");
+			TransactionDAO dao = new TransactionDAO();
+			try {
+				dao.addTransaction(transaction);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			discardTransaction();
+		}
+		if (card > total) {
+			FacesContext.getCurrentInstance().addMessage("stockMessage",
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", "Card payment higher than total!"));
+		}
+		if (card == total) {
+			setTransactionTimeDate();
+			RequestContext.getCurrentInstance().execute("window.open('Receipt.xhtml')");
+			TransactionDAO dao = new TransactionDAO();
+			try {
+				dao.addTransaction(transaction);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			discardTransaction();
+		}
+		if (card + cash + voucher >= total) {
+			setTransactionTimeDate();
+			RequestContext.getCurrentInstance().execute("window.open('Receipt.xhtml')");
+			TransactionDAO dao = new TransactionDAO();
+			try {
+				dao.addTransaction(transaction);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			discardTransaction();
+		} else {
+			FacesContext.getCurrentInstance().addMessage("stockMessage", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error!", "Error with payment! Has more than the total been received?"));
+		}
 		return null;
 	}
 
@@ -81,14 +145,57 @@ public class SalesBean extends AbstractBean implements Serializable {
 		this.quantity = quantity;
 	}
 
-	//NOTE TO SELF! QUANTITY CHECK TO BE PERFORMED IN IF STATEMENT!
+	public double getCash() {
+		return cash;
+	}
+
+	public void setCash(double cash) {
+		this.cash = cash;
+	}
+
+	public double getCard() {
+		return card;
+	}
+
+	public void setCard(double card) {
+		this.card = card;
+	}
+
+	public double getVoucher() {
+		return voucher;
+	}
+
+	public void setVoucher(double voucher) {
+		this.voucher = voucher;
+	}
+
+	public double getVoucherChange() {
+		return voucherChange;
+	}
+
+	public void setVoucherChange(double voucherChange) {
+		this.voucherChange = voucherChange;
+	}
+
+	public double getChange() {
+		return change;
+	}
+
+	public void setChange(double change) {
+		this.change = change;
+	}
+
 	public String sellStockItem() {
 		transactionCheck();
 		if (selectedRecord.isRequiresSerial() && StringUtils.isEmpty(serialNumber)) {
 			FacesContext.getCurrentInstance().addMessage("stockMessage", new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Error!", "A serial number is required for this item!!"));
+		}
+		if (selectedRecord.getStockItems().isEmpty()) {
+			FacesContext.getCurrentInstance().addMessage("stockMessage", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Error!", "There is no " + selectedRecord.getName() + " in stock"));
 		} else {
-			StockItem stockItem = new StockItem(generateId() ,selectedRecord, TransactionType.SALE);
+			StockItem stockItem = new StockItem(generateId(), selectedRecord, TransactionType.SALE);
 			transaction.getItems().add(stockItem);
 			stockItem.setSellPrice(selectedRecord.getSellPrice());
 			updateTotals(stockItem);
@@ -106,8 +213,8 @@ public class SalesBean extends AbstractBean implements Serializable {
 		if (selectedRecord.isRequiresTest()) {
 			FacesContext.getCurrentInstance().addMessage("stockMessage", new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Error!", "This item must be tested! Please book it in for a test."));
-		}  else {
-			StockItem stockItem = new StockItem(generateId() ,selectedRecord, TransactionType.CASH);
+		} else {
+			StockItem stockItem = new StockItem(generateId(), selectedRecord, TransactionType.CASH);
 			transaction.getItems().add(stockItem);
 			updateTotals(stockItem);
 			transaction.setCustomer(customerBean.getSelectedCustomer());
@@ -133,32 +240,25 @@ public class SalesBean extends AbstractBean implements Serializable {
 		return null;
 	}
 
-	public void updateTotals(StockItem stockItem)
-	{
-		if(stockItem.getTransactionType().equals(TransactionType.CASH))
-		{
+	public void updateTotals(StockItem stockItem) {
+		if (stockItem.getTransactionType().equals(TransactionType.CASH)) {
 			transaction.setBuyTotal(transaction.getBuyTotal() + stockItem.getBoughtValue());
 			this.buyTotal = transaction.getBuyTotal();
-			
-		}
-		else if(stockItem.getTransactionType().equals(TransactionType.EXCHANGE))
-		{
+
+		} else if (stockItem.getTransactionType().equals(TransactionType.EXCHANGE)) {
 			transaction.setExchangeTotal(transaction.getExchangeTotal() + stockItem.getBoughtValue());
 			this.exchangeTotal = transaction.getExchangeTotal();
-		}
-		else if(stockItem.isBeingSold())
-		{
+		} else if (stockItem.isBeingSold()) {
 			transaction.setSellTotal(transaction.getSellTotal() + stockItem.getSellPrice());
 			this.sellTotal = transaction.getSellTotal();
 		}
 		this.total = this.sellTotal - (this.buyTotal + this.exchangeTotal);
 	}
-	
-	public void updateTotals()
-	{
+
+	public void updateTotals() {
 		this.total = this.buyTotal - this.exchangeTotal + this.sellTotal;
 	}
-	
+
 	public String getSerialNumber() {
 		return serialNumber;
 	}
@@ -166,32 +266,27 @@ public class SalesBean extends AbstractBean implements Serializable {
 	public void setSerialNumber(String serialNumber) {
 		this.serialNumber = serialNumber;
 	}
-	
-	public String voidItem() 
-	{
-		if(this.selectedStockItem.getTransactionType().equals(TransactionType.CASH))
-		{
+
+	public String voidItem() {
+		if (this.selectedStockItem.getTransactionType().equals(TransactionType.CASH)) {
 			this.buyTotal = this.buyTotal - selectedStockItem.getBoughtValue();
 		}
-		if(this.selectedStockItem.getTransactionType().equals(TransactionType.EXCHANGE))
-		{
+		if (this.selectedStockItem.getTransactionType().equals(TransactionType.EXCHANGE)) {
 			this.exchangeTotal = this.exchangeTotal - selectedStockItem.getBoughtValue();
 		}
-		if(this.selectedStockItem.isBeingSold())
-		{
+		if (this.selectedStockItem.isBeingSold()) {
 			this.sellTotal = this.sellTotal - selectedStockItem.getSellPrice();
 		}
 		this.transaction.getItems().remove(selectedStockItem);
 		updateTotals();
 		return null;
 	}
-	
-	public int generateId()
-	{
+
+	public int generateId() {
 		id++;
 		return id;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -231,11 +326,11 @@ public class SalesBean extends AbstractBean implements Serializable {
 
 	public String setPrice() {
 		selectedStockItem.setSellPrice(discount);
-		this.discount = 0;       
+		this.discount = 0;
 		return null;
 	}
 
-	//Deducts percentage form
+	// Deducts percentage form
 	public String discountPrice() {
 		double percentageDiscount = selectedStockItem.getSellPrice() * ((100 - discount) / 100);
 		selectedStockItem.setSellPrice(percentageDiscount);
@@ -248,7 +343,7 @@ public class SalesBean extends AbstractBean implements Serializable {
 		this.discount = 0;
 		return null;
 	}
-	
+
 	public double getBuyTotal() {
 		return buyTotal;
 	}
@@ -306,14 +401,17 @@ public class SalesBean extends AbstractBean implements Serializable {
 		this.total = 0;
 		this.quantity = 0;
 	}
-	
-	public void onRowSelect(SelectEvent event)
-	{
-		this.selectedStockItem = ((StockItem)  event.getObject());
+
+	private void setTransactionTimeDate() {
+		transaction.setDateAndTime(new Date());
+		transaction.generateDateAndTime();
 	}
-	
-	public boolean selectedItemIsSale()
-	{
+
+	public void onRowSelect(SelectEvent event) {
+		this.selectedStockItem = ((StockItem) event.getObject());
+	}
+
+	public boolean selectedItemIsSale() {
 		return selectedStockItem.getTransactionType().equals(TransactionType.SALE);
 	}
 

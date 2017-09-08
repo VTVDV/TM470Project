@@ -6,11 +6,13 @@ public enum TransactionType
 	
 	String name;
 	
-	TransactionType(String name) {
+	TransactionType(String name) 
+	{
 		this.name = name;
 	}
 	
-	public String getName() {
+	public String getName() 
+	{
 		return name;
 	}
 }

@@ -1,5 +1,6 @@
 package com.veronica.tm470.dbo;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,8 +8,9 @@ import java.util.List;
 public class Transaction
 {
 	private int id;
-	private Date date;
-	private Date time;
+	private Date dateAndTime;
+	private String date;
+	private String time;
 	//User who processed transaction.
 	private User user;
 	private Customer customer;
@@ -19,7 +21,9 @@ public class Transaction
 	private double sellTotal;
 	private double total;
 	
-	private String paymentMethod;
+	private double cashPaid;
+	private double cardPaid;
+	private double voucherPaid;
 	
 	public Transaction()
 	{
@@ -34,22 +38,40 @@ public class Transaction
 	{
 		this.id = id;
 	}
-	public Date getDate()
+
+	public Date getDateAndTime() {
+		return dateAndTime;
+	}
+
+	public void setDateAndTime(Date dateAndTime) {
+		this.dateAndTime = dateAndTime;
+	}
+
+	public void generateDateAndTime()
 	{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		this.date= dateFormat.format(dateAndTime);
+		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+		this.time= timeFormat.format(dateAndTime);
+		
+	}
+	
+	public String getDate() {
 		return date;
 	}
-	public void setDate(Date date)
-	{
+
+	public void setDate(String date) {
 		this.date = date;
 	}
-	public Date getTime()
-	{
+
+	public String getTime() {
 		return time;
 	}
-	public void setTime(Date time)
-	{
+
+	public void setTime(String time) {
 		this.time = time;
 	}
+
 	public User getUser()
 	{
 		return user;
@@ -90,14 +112,37 @@ public class Transaction
 	public void setSellTotal(double sellTotal) {
 		this.sellTotal = sellTotal;
 	}
-
-	public String getPaymentMethod()
-	{
-		return paymentMethod;
+	
+	public double getTotal() {
+		return total;
 	}
-	public void setPaymentMethod(String paymentMethod)
-	{
-		this.paymentMethod = paymentMethod;
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+
+	public double getCashPaid() {
+		return cashPaid;
+	}
+
+	public void setCashPaid(double cashPaid) {
+		this.cashPaid = cashPaid;
+	}
+
+	public double getCardPaid() {
+		return cardPaid;
+	}
+
+	public void setCardPaid(double cardPaid) {
+		this.cardPaid = cardPaid;
+	}
+
+	public double getVoucherPaid() {
+		return voucherPaid;
+	}
+
+	public void setVoucherPaid(double voucherPaid) {
+		this.voucherPaid = voucherPaid;
 	}
 
 	public List<StockItem> getItems() {

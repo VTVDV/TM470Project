@@ -19,6 +19,7 @@ public class Test
 	private boolean notToBeFormatted; //If the item in test is to be formatted or not.
 	private String serialNumber;
 	private int status; 
+	private String failReason;
 	/*Status of the test, 
 	 * 0 = untested, 
 	 * 1 = pass, 
@@ -161,5 +162,14 @@ public class Test
 			default: return "Unkown?";
 		}
 	}
+
+	public String getFailReason() {
+		return failReason;
+	}
+
+	public void setFailReason(String failReason) {
+		this.failReason = failReason;
+	}
+	
 	
 }

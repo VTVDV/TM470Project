@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"> 
+
+<h:head></h:head> 
+<body> 
+
+<div>
+	<h1>RECEIPT</h1>
+</div>
+<div>
+	<div>
+		Date:
+		#{salesBean.transaction.date}
+	</div>
+	<div>
+		Time:
+		#{salesBean.transaction.time}
+	</div>
+</div>
+	<div>
+		<h:form id="transactionDetails">
+			<p:dataTable id="transactionTableData" var="stockItem"
+				value="#{salesBean.transaction.items}">
+				<p:column headerText="Type">
+					<h:outputText value="#{stockItem.transactionType.name}" /> -
+				</p:column>
+				<p:column headerText="Name" style="white-space : normal;">
+					<h:outputText value="#{stockItem.name}" /> -
+				</p:column>
+				<p:column headerText="Value">
+					<h:outputText value="#{stockItem.boughtValue}"
+						rendered="#{stockItem.beingBought}">
+						<f:convertNumber currencyCode="GBP" type="currency" />
+					</h:outputText>
+					<h:outputText value="#{stockItem.sellPrice}"
+						rendered="#{stockItem.beingSold}">
+						<f:convertNumber currencyCode="GBP" type="currency" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Serial Number">
+					<h:outputText value="#{stockItem.serial}"
+						rendered="#{not empty stockItem.serial}" />
+				</p:column>
+			</p:dataTable>
+
+					<c:if test="#{salesBean.cash > 0}">
+					<div>
+						Cash Paid:
+						#{salesBean.cash}
+					</div>
+					</c:if>
+					<c:if test="#{salesBean.card > 0}">
+					<div>
+						Card Paid:
+						#{salesBean.card}
+					</div>
+					</c:if>
+					<c:if test="#{salesBean.voucher > 0}">
+					<div>
+						Voucher Paid:
+						#{salesBean.voucher}
+					</div>
+					</c:if>
+					<c:if test="#{salesBean.change > 0}">
+					<div>
+						Change:
+						#{salesBean.change}
+					</div>
+					</c:if>
+					<c:if test="#{salesBean.voucherChange > 0}">
+					<div>
+						Voucher Paid:
+						#{salesBean.voucherChange}
+					</div>
+					</c:if>			
+		</h:form>
+	</div>
+</body> 
+</html>
